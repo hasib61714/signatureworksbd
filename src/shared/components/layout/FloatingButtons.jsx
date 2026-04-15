@@ -19,7 +19,7 @@ export default function FloatingButtons() {
       <button
         onClick={scrollToTop}
         aria-label="Scroll to top"
-        className={`w-10 h-10 rounded-full bg-slate-900 border border-white/15 flex items-center justify-center shadow-lg hover:bg-slate-800 hover:border-red-500/30 hover:scale-110 transition-all duration-300 ${
+        className={`w-10 h-10 rounded-full bg-navy-950 border border-white/15 flex items-center justify-center shadow-lg hover:bg-navy-900 hover:border-gold-500/30 hover:scale-110 transition-all duration-300 ${
           showTopBtn ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
         }`}
       >
@@ -32,7 +32,7 @@ export default function FloatingButtons() {
       <a
         href={`tel:${PHONE_NUMBER}`}
         aria-label="Call Now"
-        className="w-14 h-14 rounded-full bg-slate-900 border border-white/15 flex items-center justify-center shadow-xl hover:bg-red-600 hover:border-red-500 hover:scale-110 hover:shadow-red-500/30 transition-all duration-300"
+        className="w-14 h-14 rounded-full bg-navy-950 border border-gold-500/20 flex items-center justify-center shadow-xl hover:bg-gold-500 hover:border-gold-400 hover:scale-110 hover:shadow-gold-500/30 transition-all duration-300"
       >
         <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
           <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />

@@ -1,7 +1,9 @@
 'use client'
 import { useState } from 'react'
+import { RotateCcw } from 'lucide-react'
 import { WHATSAPP_NUMBER } from '@/shared/constants/constants'
 import { supabase } from '@/lib/supabase'
+import emailjs from '@emailjs/browser'
 
 // Sat–Thu (0=Sun skip, 5=Fri skip)
 const TIME_SLOTS = ['9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM', '6:00 PM']
@@ -50,20 +52,46 @@ export default function BookingClient() {
 
     const dateStr = `${selectedDay.getFullYear()}-${String(selectedDay.getMonth() + 1).padStart(2, '0')}-${String(selectedDay.getDate()).padStart(2, '0')}`
 
+    const serviceId  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_BOOKING_TEMPLATE_ID
+    const publicKey  = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+
+    let savedToSupabase = false
+
     if (supabase) {
       const { error } = await supabase.from('bookings').insert([{
         name: form.name,
         phone: form.phone,
-        topic: form.topic || null,
-        meeting_type: meetingType,
         date: dateStr,
         time: selectedTime,
-        submitted_at: new Date().toISOString(),
+        meeting_type: meetingType,
+        notes: form.topic || null,
+        status: 'pending',
       }])
+
       if (error) {
-        console.error('Booking error:', error)
-        setStatus('error')
-        return
+        console.error('Supabase booking save error:', error)
+      } else {
+        savedToSupabase = true
+      }
+    }
+
+    if (serviceId && templateId && publicKey) {
+      try {
+        await emailjs.send(serviceId, templateId, {
+          from_name: form.name,
+          from_phone: form.phone,
+          meeting_type: meetingType,
+          booking_date: dateStr,
+          booking_time: selectedTime,
+          topic: form.topic || 'Not specified',
+        }, publicKey)
+      } catch (err) {
+        console.error('EmailJS error:', err)
+        if (!savedToSupabase) {
+          setStatus('error')
+          return
+        }
       }
     } else {
       await new Promise(r => setTimeout(r, 800))
@@ -97,9 +125,10 @@ export default function BookingClient() {
         </p>
         <button
           onClick={() => { setStatus(null); setSelectedDay(null); setSelectedTime(null); setForm({ name: '', phone: '', topic: '' }) }}
-          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-medium transition-colors mt-2"
+          className="inline-flex items-center gap-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-medium transition-colors mt-2"
         >
-          Book another time →
+          <RotateCcw className="h-4 w-4" />
+          <span>Book another time</span>
         </button>
       </div>
     )
@@ -227,7 +256,7 @@ export default function BookingClient() {
             </div>
 
             {status === 'error' && (
-              <p className="text-red-500 text-sm text-center">Something went wrong. Please try via WhatsApp below.</p>
+              <p className="text-amber-600 dark:text-amber-300 text-sm text-center">Something went wrong. Please try via WhatsApp below.</p>
             )}
 
             <div className="flex flex-col sm:flex-row gap-3">

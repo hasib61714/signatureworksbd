@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
+import { ArrowRight } from 'lucide-react'
 import Container from '@/shared/components/ui/Container'
 import Button from '@/shared/components/ui/Button'
 import Reveal from '@/shared/components/ui/Reveal'
 import { PHONE_NUMBER, WHATSAPP_NUMBER, EMAIL } from '@/shared/constants/constants'
 import { supabase } from '@/lib/supabase'
+import emailjs from '@emailjs/browser'
 
 export default function ContactSection() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', service: '', budget: '', message: '' })
@@ -16,6 +18,12 @@ export default function ContactSection() {
     e.preventDefault()
     setStatus('sending')
 
+    const serviceId  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
+    const templateId = process.env.NEXT_PUBLIC_EMAILJS_CONTACT_TEMPLATE_ID
+    const publicKey  = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+
+    let savedToSupabase = false
+
     if (supabase) {
       const { error } = await supabase.from('contact_submissions').insert([{
         name: form.name,
@@ -24,12 +32,31 @@ export default function ContactSection() {
         service: form.service || null,
         budget: form.budget || null,
         message: form.message || null,
-        submitted_at: new Date().toISOString(),
       }])
+
       if (error) {
-        console.error('Supabase error:', error)
-        setStatus('error')
-        return
+        console.error('Supabase contact save error:', error)
+      } else {
+        savedToSupabase = true
+      }
+    }
+
+    if (serviceId && templateId && publicKey) {
+      try {
+        await emailjs.send(serviceId, templateId, {
+          from_name: form.name,
+          from_phone: form.phone,
+          from_email: form.email || 'Not provided',
+          service_type: form.service || 'Not specified',
+          budget_range: form.budget || 'Not specified',
+          message: form.message || 'No message',
+        }, publicKey)
+      } catch (err) {
+        console.error('EmailJS error:', err)
+        if (!savedToSupabase) {
+          setStatus('error')
+          return
+        }
       }
     } else {
       await new Promise(r => setTimeout(r, 800))
@@ -39,7 +66,7 @@ export default function ContactSection() {
     setForm({ name: '', phone: '', email: '', service: '', budget: '', message: '' })
   }
 
-  const inputCls = 'w-full px-4 py-3 rounded-xl bg-slate-800/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-red-500/50 focus:bg-slate-800 transition-all duration-200 text-sm'
+  const inputCls = 'w-full px-4 py-3 rounded-xl bg-slate-800/60 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-gold-400/60 focus:bg-slate-800 transition-all duration-200 text-sm'
 
   const contactLinks = [
     {
@@ -98,22 +125,22 @@ export default function ContactSection() {
     <section id="contact" className="py-24 bg-slate-950 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-500/40 to-transparent" />
       <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 70% 40% at 50% 0%, rgba(220,38,38,0.08) 0%, transparent 60%)' }} />
+        style={{ background: 'radial-gradient(ellipse 70% 40% at 50% 0%, rgba(212,175,55,0.10) 0%, transparent 60%)' }} />
 
       <Container className="relative">
         {/* Section header */}
         <div className="text-center mb-14">
           <Reveal>
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-widest uppercase bg-red-500/10 text-red-400 border border-red-500/20 mb-5">
-              <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold tracking-widest uppercase bg-gold-500/10 text-gold-300 border border-gold-500/20 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-gold-300 animate-pulse" />
               Contact Us
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight">
-              Start Your{' '}
-              <span className="bg-gradient-to-r from-red-400 via-orange-300 to-amber-300 bg-clip-text text-transparent">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white leading-tight" style={{ textWrap: 'balance' }}>
+              <span className="block">Start Your</span>
+              <span className="block bg-gradient-to-r from-gold-300 via-amber-200 to-white bg-clip-text text-transparent">
                 Dream Project
               </span>
             </h2>
@@ -129,7 +156,7 @@ export default function ContactSection() {
             <div className="space-y-5">
               {contactLinks.map(item => (
                 <div key={item.label} className="flex items-start gap-4">
-                  <div className={`w-11 h-11 rounded-xl bg-slate-800/60 border border-white/10 flex items-center justify-center shrink-0 ${item.iconColor || 'text-red-400'}`}>
+                  <div className={`w-11 h-11 rounded-xl bg-slate-800/60 border border-white/10 flex items-center justify-center shrink-0 ${item.iconColor || 'text-gold-300'}`}>
                     {item.icon}
                   </div>
                   <div>
@@ -139,7 +166,7 @@ export default function ContactSection() {
                         href={item.href}
                         target={item.href.startsWith('http') ? '_blank' : undefined}
                         rel="noreferrer"
-                        className="text-slate-200 text-sm hover:text-red-300 transition-colors"
+                        className="text-slate-200 text-sm hover:text-gold-300 transition-colors"
                       >
                         {item.value}
                       </a>
@@ -164,7 +191,7 @@ export default function ContactSection() {
           <Reveal direction="right" className="lg:col-span-3">
             <div className="bg-slate-900/60 border border-white/[0.07] rounded-3xl p-8 relative overflow-hidden">
               {/* Top red accent line */}
-              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/60 to-transparent" />
+              <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-500/60 to-transparent" />
 
               {status === 'sent' ? (
                 <div className="text-center py-12">
@@ -175,21 +202,23 @@ export default function ContactSection() {
                   </div>
                   <h3 className="text-white text-xl font-bold mb-2">Message Sent!</h3>
                   <p className="text-slate-400 text-sm">We&apos;ll get back to you within 24 hours.</p>
-                  <button onClick={() => setStatus(null)} className="mt-6 text-red-400 text-sm hover:text-red-300 font-medium transition-colors">
-                    Send another message →
+                  <button onClick={() => setStatus(null)} className="mt-6 inline-flex items-center gap-2 text-gold-300 text-sm hover:text-gold-200 font-medium transition-colors">
+                    <span>Send another message</span>
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               ) : status === 'error' ? (
                 <div className="text-center py-12">
-                  <div className="w-16 h-16 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-5">
-                    <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <div className="w-16 h-16 rounded-full bg-amber-500/10 border border-amber-400/30 flex items-center justify-center mx-auto mb-5">
+                    <svg className="w-8 h-8 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
                     </svg>
                   </div>
                   <h3 className="text-white text-xl font-bold mb-2">Something went wrong</h3>
                   <p className="text-slate-400 text-sm">Please try again or reach us via WhatsApp.</p>
-                  <button onClick={() => setStatus(null)} className="mt-6 text-red-400 text-sm hover:text-red-300 font-medium transition-colors">
-                    Try again →
+                  <button onClick={() => setStatus(null)} className="mt-6 inline-flex items-center gap-2 text-gold-300 text-sm hover:text-gold-200 font-medium transition-colors">
+                    <span>Try again</span>
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               ) : (

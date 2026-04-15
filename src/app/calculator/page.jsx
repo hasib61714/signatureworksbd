@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import Container from '@/shared/components/ui/Container'
-import SectionLabel from '@/shared/components/ui/SectionLabel'
+import PageHero from '@/shared/components/layout/PageHero'
 import CostCalculatorClient from '@/features/calculator/components/CostCalculatorClient'
 
 export const metadata = {
@@ -11,19 +11,25 @@ export const metadata = {
 export default function CalculatorPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
-      <Container className="max-w-3xl">
-        <div className="text-center mb-12">
-          <SectionLabel>Free Tool</SectionLabel>
-          <h1 className="text-4xl sm:text-5xl font-bold text-navy-900 dark:text-white font-serif mt-4">
-            Construction <span className="text-light-gradient">Cost Calculator</span>
-          </h1>
-          <p className="mt-4 text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
-            Get an instant ballpark estimate for your project. Based on current Dhaka market rates as of 2024.
-          </p>
+      <Container className="max-w-4xl">
+        <div className="mb-12">
+          <PageHero
+            label="Planning Tool"
+            title="Cost"
+            accent="Calculator"
+            description="Get a quick budget range for construction, renovation, or interior work before moving into detailed planning."
+            cards={[
+              { title: 'Quick estimate', text: 'Get a fast early-stage budget range.' },
+              { title: 'Dhaka context', text: 'Built around practical local assumptions.' },
+              { title: 'Better planning', text: 'Start decisions with more clarity.' },
+            ]}
+          />
         </div>
-        <Suspense>
-          <CostCalculatorClient />
-        </Suspense>
+        <div className="max-w-3xl mx-auto">
+          <Suspense>
+            <CostCalculatorClient />
+          </Suspense>
+        </div>
       </Container>
     </main>
   )

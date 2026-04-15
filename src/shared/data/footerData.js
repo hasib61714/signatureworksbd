@@ -27,7 +27,6 @@ export const footerData = {
         { label: 'About Us',    href: '/#about' },
         { label: 'Our Process', href: '/#process' },
         { label: 'Portfolio',   href: '/portfolio' },
-        { label: 'Pricing',     href: '/#pricing' },
         { label: 'Contact',     href: '/#contact' },
       ],
     },

@@ -1,7 +1,7 @@
 export const servicesData = [
   {
     id: 'construction',
-    icon: '🏗️',
+    icon: 'building-2',
     title: 'Construction',
     subtitle: 'Build with confidence',
     description:
@@ -13,12 +13,12 @@ export const servicesData = [
       'Renovation & Retrofit',
       'Project Management',
     ],
-    cta: 'Get Construction Quote',
-    href: '/#contact',
+    cta: 'View Construction Details',
+    href: '/services/construction',
   },
   {
     id: 'architecture',
-    icon: '📐',
+    icon: 'ruler',
     title: 'Architectural Design',
     subtitle: 'Vision turned into reality',
     description:
@@ -30,12 +30,12 @@ export const servicesData = [
       'Structural Coordination',
       'Permit & Approval Support',
     ],
-    cta: 'Get Architecture Quote',
-    href: '/#contact',
+    cta: 'View Design Details',
+    href: '/services/architectural-design',
   },
   {
     id: 'interior',
-    icon: '🛋️',
+    icon: 'sofa',
     title: 'Interior Design',
     subtitle: 'Spaces that inspire',
     description:
@@ -47,7 +47,7 @@ export const servicesData = [
       'Custom Furniture',
       'Home Decor & Styling',
     ],
-    cta: 'Get Interior Quote',
-    href: '/#contact',
+    cta: 'View Interior Details',
+    href: '/services/interior-design',
   },
 ]

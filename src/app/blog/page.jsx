@@ -1,6 +1,7 @@
+import Image from 'next/image'
 import Link from 'next/link'
 import Container from '@/shared/components/ui/Container'
-import SectionLabel from '@/shared/components/ui/SectionLabel'
+import PageHero from '@/shared/components/layout/PageHero'
 import { blogData } from '@/data'
 
 export const metadata = {
@@ -12,10 +13,12 @@ function BlogCard({ post }) {
   return (
     <Link href={`/blog/${post.slug}`} className="group flex flex-col bg-white dark:bg-navy-900 border border-slate-100 dark:border-white/[0.06] rounded-2xl overflow-hidden hover:border-gold-500/30 dark:hover:border-gold-500/30 transition-all duration-300 hover:shadow-xl hover:shadow-navy-900/10 dark:hover:shadow-gold-500/5">
       <div className="relative aspect-[16/9] overflow-hidden">
-        <img
+        <Image
           src={post.coverImage}
           alt={post.title}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+          fill
+          sizes="(max-width: 768px) 100vw, 33vw"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950/40 to-transparent" />
         <span className="absolute top-3 left-3 px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase bg-gold-500/90 text-navy-900">
@@ -50,22 +53,28 @@ export default function BlogPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
       <Container>
-        <div className="text-center mb-14">
-          <SectionLabel>Insights</SectionLabel>
-          <h1 className="text-4xl sm:text-5xl font-bold text-navy-900 dark:text-white font-serif mt-4">
-            Design & Construction <span className="text-light-gradient">Insights</span>
-          </h1>
-          <p className="mt-4 text-slate-500 dark:text-slate-400 max-w-lg mx-auto">
-            Practical knowledge on construction costs, materials, design decisions, and project management — from our team.
-          </p>
+        <div className="mb-14">
+          <PageHero
+            label="Insights Library"
+            title="Design"
+            accent="Journal"
+            description="Helpful articles on planning, materials, cost decisions, and real project lessons for home and commercial work in Bangladesh."
+            cards={[
+              { title: 'Budget clarity', text: 'Understand cost drivers before you build.' },
+              { title: 'Material guidance', text: 'Choose finishes that suit climate and use.' },
+              { title: 'Project planning', text: 'Reduce mistakes with better decisions early.' },
+            ]}
+          />
         </div>
 
         {/* Featured post */}
         <Link href={`/blog/${featured.slug}`} className="group relative block rounded-3xl overflow-hidden mb-12 aspect-[21/9] min-h-[280px]">
-          <img
+          <Image
             src={featured.coverImage}
             alt={featured.title}
-            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            fill
+            sizes="100vw"
+            className="object-cover group-hover:scale-105 transition-transform duration-700"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-navy-950/95 via-navy-950/50 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-8 sm:p-10">

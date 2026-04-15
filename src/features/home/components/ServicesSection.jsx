@@ -23,8 +23,9 @@ const icons = {
   ),
 }
 
-export default function ServicesSection() {
-  const [construction, architecture, interior] = servicesData
+export default function ServicesSection({ services = servicesData }) {
+  const safeServices = Array.isArray(services) && services.length >= 3 ? services : servicesData
+  const [construction, architecture, interior] = safeServices
 
   return (
     <section id="services" className="py-24 bg-white dark:bg-slate-950">
@@ -40,32 +41,32 @@ export default function ServicesSection() {
         <div className="grid md:grid-cols-2 gap-6 mb-6">
           {[construction, architecture].map((service, i) => (
             <Reveal key={service.id} delay={i * 100}>
-              <div className="group relative bg-slate-900 dark:bg-slate-900 border border-white/[0.08] rounded-2xl p-8 overflow-hidden hover:border-red-500/30 transition-all duration-500 hover:shadow-xl hover:shadow-red-500/10 min-h-[320px] flex flex-col">
+              <div className="group relative bg-slate-900 dark:bg-slate-900 border border-white/[0.08] rounded-2xl p-8 overflow-hidden hover:border-gold-500/30 transition-all duration-500 hover:shadow-xl hover:shadow-gold-500/10 min-h-[320px] flex flex-col">
                 {/* Radial glow on hover */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                  style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(220,38,38,0.12) 0%, transparent 70%)' }} />
-                {/* Top red line */}
-                <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-red-500/0 to-transparent group-hover:via-red-500/60 transition-all duration-500" />
+                  style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(212,175,55,0.14) 0%, transparent 70%)' }} />
+                {/* Top accent line */}
+                <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold-500/0 to-transparent group-hover:via-gold-500/60 transition-all duration-500" />
 
                 <div className="relative z-10 flex-1 flex flex-col">
-                  <div className="w-14 h-14 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-6 group-hover:bg-red-500/20 transition-colors duration-300">
+                  <div className="w-14 h-14 rounded-xl bg-gold-500/10 border border-gold-500/20 flex items-center justify-center text-gold-300 mb-6 group-hover:bg-gold-500/20 transition-colors duration-300">
                     {icons[service.id]}
                   </div>
                   <div className="mb-2">
-                    <span className="text-xs font-semibold tracking-widest uppercase text-red-400/80">{service.subtitle}</span>
+                    <span className="text-xs font-semibold tracking-widest uppercase text-gold-300/80">{service.subtitle}</span>
                   </div>
                   <h3 className="text-2xl font-bold text-white mb-3">{service.title}</h3>
                   <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-1">{service.description}</p>
                   <ul className="grid grid-cols-2 gap-2 mb-7">
                     {service.features.map(f => (
                       <li key={f} className="flex items-center gap-2 text-xs text-slate-300">
-                        <span className="w-1 h-1 rounded-full bg-red-400 shrink-0" />
+                        <span className="w-1 h-1 rounded-full bg-gold-300 shrink-0" />
                         {f}
                       </li>
                     ))}
                   </ul>
                   <a href={service.href}
-                    className="inline-flex items-center gap-2 text-sm font-semibold text-red-400 hover:text-red-300 transition-colors group/link">
+                    className="inline-flex items-center gap-2 text-sm font-semibold text-gold-300 hover:text-gold-200 transition-colors group/link">
                     {service.cta}
                     <svg className="w-4 h-4 transition-transform group-hover/link:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -79,16 +80,16 @@ export default function ServicesSection() {
 
         {/* Bottom: Interior as full-width lighter card */}
         <Reveal>
-          <div className="group relative bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/[0.06] rounded-2xl p-8 overflow-hidden hover:border-red-500/20 hover:shadow-lg hover:shadow-red-500/5 transition-all duration-500">
-            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-red-500/0 to-transparent group-hover:via-red-500/40 transition-all duration-500" />
+          <div className="group relative bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-white/[0.06] rounded-2xl p-8 overflow-hidden hover:border-gold-500/20 hover:shadow-lg hover:shadow-gold-500/5 transition-all duration-500">
+            <div className="absolute top-0 left-8 right-8 h-px bg-gradient-to-r from-transparent via-gold-500/0 to-transparent group-hover:via-gold-500/40 transition-all duration-500" />
 
             <div className="grid md:grid-cols-3 gap-8 items-center">
               <div className="flex items-start gap-5">
-                <div className="w-14 h-14 rounded-xl bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0 group-hover:bg-red-100 dark:group-hover:bg-red-500/20 transition-colors duration-300">
+                <div className="w-14 h-14 rounded-xl bg-gold-50 dark:bg-gold-500/10 border border-gold-200 dark:border-gold-500/20 flex items-center justify-center text-gold-600 dark:text-gold-300 shrink-0 group-hover:bg-gold-100 dark:group-hover:bg-gold-500/20 transition-colors duration-300">
                   {icons[interior.id]}
                 </div>
                 <div>
-                  <span className="text-xs font-semibold tracking-widest uppercase text-red-500/70 dark:text-red-400/70">{interior.subtitle}</span>
+                  <span className="text-xs font-semibold tracking-widest uppercase text-gold-600/80 dark:text-gold-300/80">{interior.subtitle}</span>
                   <h3 className="text-xl font-bold text-slate-900 dark:text-white mt-1">{interior.title}</h3>
                   <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mt-2">{interior.description}</p>
                 </div>
@@ -96,7 +97,7 @@ export default function ServicesSection() {
               <ul className="grid grid-cols-1 gap-2 md:col-span-1">
                 {interior.features.map(f => (
                   <li key={f} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
-                    <svg className="w-4 h-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <svg className="w-4 h-4 text-gold-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                     </svg>
                     {f}

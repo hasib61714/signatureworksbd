@@ -16,7 +16,9 @@ function Stars({ count }) {
   )
 }
 
-export default function TestimonialsSection() {
+export default function TestimonialsSection({ testimonials = testimonialsData }) {
+  const safeTestimonials = Array.isArray(testimonials) && testimonials.length > 0 ? testimonials : testimonialsData
+
   return (
     <section id="testimonials" className="py-24 bg-slate-50 dark:bg-slate-900">
       <Container>
@@ -28,9 +30,9 @@ export default function TestimonialsSection() {
         />
 
         <div className="grid md:grid-cols-3 gap-6">
-          {testimonialsData.map((t, i) => (
+          {safeTestimonials.map((t, i) => (
             <Reveal key={t.id} delay={i * 100}>
-              <div className="group bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/[0.06] rounded-2xl p-7 hover:border-red-200 dark:hover:border-red-500/20 hover:shadow-xl hover:shadow-red-500/5 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
+              <div className="group bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/[0.06] rounded-2xl p-7 hover:border-gold-200 dark:hover:border-gold-500/20 hover:shadow-xl hover:shadow-gold-500/5 transition-all duration-300 flex flex-col h-full relative overflow-hidden">
                 {/* Quote mark */}
                 <div className="absolute top-4 right-6 text-6xl font-serif leading-none text-slate-100 dark:text-white/[0.04] select-none pointer-events-none">
                   &ldquo;
@@ -43,7 +45,7 @@ export default function TestimonialsSection() {
                 </blockquote>
 
                 <div className="flex items-center gap-3 pt-5 border-t border-slate-100 dark:border-white/[0.06]">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-500 to-orange-400 flex items-center justify-center text-white font-bold text-xs shrink-0">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-navy-900 via-navy-700 to-gold-500 flex items-center justify-center text-white font-bold text-xs shrink-0">
                     {t.avatar}
                   </div>
                   <div>

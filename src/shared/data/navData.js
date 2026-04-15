@@ -5,6 +5,5 @@ export const navLinks = [
   { label: 'Blog',        href: '/blog' },
   { label: 'Calculator',  href: '/calculator' },
   { label: 'About',       href: '/#about' },
-  { label: 'Pricing',     href: '/#pricing' },
   { label: 'Contact',     href: '/#contact' },
 ]

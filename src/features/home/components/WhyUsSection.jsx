@@ -31,7 +31,9 @@ const svgIcons = [
   </svg>,
 ]
 
-export default function WhyUsSection() {
+export default function WhyUsSection({ items = whyUsData }) {
+  const safeItems = Array.isArray(items) && items.length > 0 ? items : whyUsData
+
   return (
     <section id="why-us" className="py-24 bg-slate-50 dark:bg-slate-900">
       <Container>
@@ -43,10 +45,10 @@ export default function WhyUsSection() {
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {whyUsData.map((item, i) => (
+          {safeItems.map((item, i) => (
             <Reveal key={item.title} delay={i * 80}>
-              <div className="group flex items-start gap-5 p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-white/[0.06] hover:border-red-200 dark:hover:border-red-500/20 hover:shadow-lg hover:shadow-red-500/5 transition-all duration-300">
-                <div className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0 group-hover:bg-red-50 dark:group-hover:bg-red-500/10 group-hover:border-red-200 dark:group-hover:border-red-500/20 group-hover:text-red-600 dark:group-hover:text-red-400 transition-all duration-300">
+              <div className="group flex items-start gap-5 p-6 bg-white dark:bg-slate-800/50 rounded-2xl border border-slate-200 dark:border-white/[0.06] hover:border-gold-200 dark:hover:border-gold-500/20 hover:shadow-lg hover:shadow-gold-500/5 transition-all duration-300">
+                <div className="w-11 h-11 rounded-xl bg-slate-100 dark:bg-slate-700/50 border border-slate-200 dark:border-white/10 flex items-center justify-center text-slate-500 dark:text-slate-400 shrink-0 group-hover:bg-gold-50 dark:group-hover:bg-gold-500/10 group-hover:border-gold-200 dark:group-hover:border-gold-500/20 group-hover:text-gold-600 dark:group-hover:text-gold-300 transition-all duration-300">
                   {svgIcons[i]}
                 </div>
                 <div>

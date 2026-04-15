@@ -1,5 +1,5 @@
 import Container from '@/shared/components/ui/Container'
-import SectionLabel from '@/shared/components/ui/SectionLabel'
+import PageHero from '@/shared/components/layout/PageHero'
 import PortfolioGrid from '@/features/portfolio/components/PortfolioGrid'
 
 export const metadata = {
@@ -11,14 +11,19 @@ export default function PortfolioPage() {
   return (
     <main className="pt-32 pb-24 bg-navy-950 min-h-screen">
       <Container>
-        <div className="text-center mb-14">
-          <SectionLabel>Our Portfolio</SectionLabel>
-          <h1 className="text-4xl sm:text-6xl font-bold text-white font-serif leading-tight">
-            Projects That <span className="text-gold-gradient">Define Us</span>
-          </h1>
-          <p className="mt-4 text-slate-400 max-w-xl mx-auto text-lg">
-            150+ completed projects across Dhaka — each one a signature of our craft.
-          </p>
+        <div className="mb-14">
+          <PageHero
+            dark
+            label="Built Work"
+            title="Project"
+            accent="Portfolio"
+            description="A curated look at residential, commercial, and interior work shaped by planning, detailing, and disciplined execution."
+            cards={[
+              { title: 'Residential', text: 'Comfort-driven homes with stronger layout logic.' },
+              { title: 'Commercial', text: 'Branded spaces that feel practical and polished.' },
+              { title: 'Renovation', text: 'Meaningful transformation without a generic feel.' },
+            ]}
+          />
         </div>
 
         <PortfolioGrid />

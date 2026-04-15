@@ -7,8 +7,7 @@
 @layer base {
   html {
     scroll-behavior: smooth;
-    /* contact strip (36px) + main nav (56px) */
-    scroll-padding-top: 92px;
+    scroll-padding-top: 72px;
   }
 
   body {
@@ -36,17 +35,18 @@
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke='rgba(148,163,184,0.05)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e");
   }
 
-  /* Primary brand gradient — red → orange → amber */
   .text-gradient {
-    @apply bg-gradient-to-r from-red-600 via-orange-500 to-amber-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-navy-700 via-navy-500 to-gold-500 bg-clip-text text-transparent;
   }
   .brand-gradient {
-    @apply bg-gradient-to-r from-red-600 via-orange-500 to-amber-400 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-navy-900 via-navy-600 to-gold-500 bg-clip-text text-transparent;
+  }
+  .text-gold-gradient {
+    @apply bg-gradient-to-r from-gold-500 via-amber-300 to-gold-300 bg-clip-text text-transparent;
   }
 
-  /* Legacy light gradient (kept for any hero text on dark bg) */
   .text-light-gradient {
-    background: linear-gradient(135deg, #ffffff, #CBD5E1);
+    background: linear-gradient(135deg, #fef3c7, #f2a01f, #8cafda);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

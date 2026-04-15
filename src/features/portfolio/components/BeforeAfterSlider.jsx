@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import { useState, useRef, useCallback } from 'react'
 
 export default function BeforeAfterSlider({ beforeImage, afterImage, beforeAlt = 'Before', afterAlt = 'After' }) {
@@ -33,11 +34,11 @@ export default function BeforeAfterSlider({ beforeImage, afterImage, beforeAlt =
       onTouchEnd={() => setDragging(false)}
     >
       {/* After image (full) */}
-      <img src={afterImage} alt={afterAlt} className="absolute inset-0 w-full h-full object-cover" draggable={false} />
+      <Image src={afterImage} alt={afterAlt} fill sizes="100vw" className="object-cover" draggable={false} />
 
       {/* Before image (clipped) */}
       <div className="absolute inset-0 overflow-hidden" style={{ width: `${position}%` }}>
-        <img src={beforeImage} alt={beforeAlt} className="absolute inset-0 h-full object-cover" style={{ width: `${100 / (position / 100)}%`, maxWidth: 'none' }} draggable={false} />
+        <Image src={beforeImage} alt={beforeAlt} fill sizes="100vw" className="object-cover" style={{ width: `${100 / (position / 100)}%`, maxWidth: 'none' }} draggable={false} />
       </div>
 
       {/* Divider line */}

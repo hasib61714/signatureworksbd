@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { portfolioCategories, portfolioData } from '@/data'
 
@@ -37,10 +38,12 @@ export default function PortfolioGrid() {
             href={`/portfolio/${project.slug}`}
             className="group relative rounded-2xl overflow-hidden bg-navy-900 aspect-[4/3] block w-full"
           >
-            <img
+            <Image
               src={project.image}
               alt={project.title}
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover group-hover:scale-110 transition-transform duration-700"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-navy-950/90 via-navy-950/20 to-transparent" />
 

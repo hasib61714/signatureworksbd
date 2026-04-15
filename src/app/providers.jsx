@@ -28,6 +28,8 @@ function HashScrollHandler() {
 }
 
 function SiteChrome({ children }) {
+  const pathname = usePathname()
+  if (pathname.startsWith('/admin')) return <>{children}</>
   return (
     <div className="min-h-screen bg-white dark:bg-slate-950 overflow-x-hidden">
       <Navbar />

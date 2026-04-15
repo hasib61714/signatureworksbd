@@ -1,5 +1,5 @@
 import Container from '@/shared/components/ui/Container'
-import SectionLabel from '@/shared/components/ui/SectionLabel'
+import PageHero from '@/shared/components/layout/PageHero'
 import BookingClient from '@/features/booking/components/BookingClient'
 
 export const metadata = {
@@ -10,17 +10,23 @@ export const metadata = {
 export default function BookPage() {
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
-      <Container className="max-w-2xl">
-        <div className="text-center mb-12">
-          <SectionLabel>Free Consultation</SectionLabel>
-          <h1 className="text-4xl sm:text-5xl font-bold text-navy-900 dark:text-white font-serif mt-4">
-            Book a <span className="text-light-gradient">Consultation</span>
-          </h1>
-          <p className="mt-4 text-slate-500 dark:text-slate-400 max-w-md mx-auto">
-            30 minutes with our team — no obligation, no sales pitch. Just an honest conversation about your project.
-          </p>
+      <Container className="max-w-4xl">
+        <div className="mb-12">
+          <PageHero
+            label="Free Consultation"
+            title="Book"
+            accent="Consultation"
+            description="Talk with our team about design direction, budgeting, renovation, or construction planning in a focused 30-minute session."
+            cards={[
+              { title: 'No pressure', text: 'A clear discussion before you commit.' },
+              { title: 'Project focus', text: 'Advice based on your real needs and site.' },
+              { title: 'Next steps', text: 'Get a clearer direction for moving ahead.' },
+            ]}
+          />
         </div>
-        <BookingClient />
+        <div className="max-w-2xl mx-auto">
+          <BookingClient />
+        </div>
       </Container>
     </main>
   )

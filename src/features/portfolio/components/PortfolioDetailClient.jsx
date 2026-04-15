@@ -1,4 +1,5 @@
 'use client'
+import Image from 'next/image'
 import { useState } from 'react'
 import Link from 'next/link'
 import Container from '@/shared/components/ui/Container'
@@ -13,11 +14,15 @@ function GalleryLightbox({ images, initialIndex, onClose }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95" onClick={onClose}>
       <div className="relative w-full max-w-5xl px-4" onClick={e => e.stopPropagation()}>
-        <img
-          src={images[current]}
-          alt={`Gallery image ${current + 1}`}
-          className="w-full max-h-[80vh] object-contain rounded-xl"
-        />
+        <div className="relative h-[80vh] w-full">
+          <Image
+            src={images[current]}
+            alt={`Gallery image ${current + 1}`}
+            fill
+            sizes="100vw"
+            className="rounded-xl object-contain"
+          />
+        </div>
         <div className="absolute inset-y-0 left-4 flex items-center">
           <button onClick={prev} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors backdrop-blur-sm">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -50,10 +55,12 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
     <main className="min-h-screen bg-navy-950 pt-24 pb-20">
       {/* Hero image */}
       <div className="relative h-[50vh] sm:h-[60vh] overflow-hidden">
-        <img
+        <Image
           src={project.gallery[0]}
           alt={project.title}
-          className="w-full h-full object-cover"
+          fill
+          sizes="100vw"
+          className="object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-navy-950/40 to-navy-950/20" />
         <div className="absolute bottom-0 left-0 right-0">
@@ -123,7 +130,7 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
                       onClick={() => setLightbox(i)}
                       className="group relative aspect-[4/3] rounded-xl overflow-hidden"
                     >
-                      <img src={img} alt={`${project.title} ${i + 1}`} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                      <Image src={img} alt={`${project.title} ${i + 1}`} fill sizes="(max-width: 768px) 50vw, 25vw" className="object-cover group-hover:scale-110 transition-transform duration-500" />
                       <div className="absolute inset-0 bg-navy-950/0 group-hover:bg-navy-950/30 transition-colors duration-300 flex items-center justify-center">
                         <svg className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />

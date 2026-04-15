@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { ArrowRight, RotateCcw } from 'lucide-react'
 import Link from 'next/link'
 import { WHATSAPP_NUMBER } from '@/shared/constants/constants'
 
@@ -198,8 +199,9 @@ export default function CostCalculatorClient() {
           </Link>
         </div>
 
-        <button onClick={reset} className="w-full text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-medium transition-colors py-2">
-          ← Start over
+        <button onClick={reset} className="inline-flex w-full items-center justify-center gap-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-sm font-medium transition-colors py-2">
+          <RotateCcw className="h-4 w-4" />
+          <span>Start over</span>
         </button>
       </div>
     )
@@ -263,9 +265,10 @@ export default function CostCalculatorClient() {
             <button
               onClick={calculate}
               disabled={!canShowResult}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-gold-500/20 transition-all duration-300 active:scale-95"
+              className="inline-flex w-full items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-gold-600 to-gold-400 text-navy-900 font-bold text-sm disabled:opacity-40 disabled:cursor-not-allowed hover:shadow-lg hover:shadow-gold-500/20 transition-all duration-300 active:scale-95"
             >
-              Calculate Estimate →
+              <span>Calculate Estimate</span>
+              <ArrowRight className="h-4 w-4" />
             </button>
           </div>
         )}

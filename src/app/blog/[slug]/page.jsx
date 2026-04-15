@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import Image from 'next/image'
 import Link from 'next/link'
 import Container from '@/shared/components/ui/Container'
 import { blogData } from '@/data'
@@ -30,7 +31,7 @@ export default function BlogPostPage({ params }) {
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
       {/* Hero */}
       <div className="relative h-[40vh] sm:h-[50vh] overflow-hidden">
-        <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" />
+        <Image src={post.coverImage} alt={post.title} fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-navy-950 via-white/40 dark:via-navy-950/40 to-transparent" />
       </div>
 

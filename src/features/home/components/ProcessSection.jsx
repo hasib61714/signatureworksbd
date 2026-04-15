@@ -23,17 +23,19 @@ const stepIcons = [
   </svg>,
 ]
 
-export default function ProcessSection() {
+export default function ProcessSection({ steps = processData }) {
+  const safeSteps = Array.isArray(steps) && steps.length > 0 ? steps : processData
+
   return (
     <section id="process" className="py-24 bg-slate-950 relative overflow-hidden">
       {/* Background texture */}
       <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
       {/* Top/bottom border lines */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
-      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-500/30 to-transparent" />
+      <div className="absolute bottom-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-gold-500/20 to-transparent" />
       {/* Radial glow */}
       <div className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(220,38,38,0.08) 0%, transparent 60%)' }} />
+        style={{ background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(212,175,55,0.10) 0%, transparent 60%)' }} />
 
       <Container className="relative">
         <SectionHeader
@@ -46,30 +48,30 @@ export default function ProcessSection() {
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
           {/* Desktop connecting line */}
           <div className="hidden lg:block absolute top-14 left-[12.5%] right-[12.5%] h-px"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(239,68,68,0.3) 20%, rgba(239,68,68,0.3) 80%, transparent)' }} />
+            style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3) 20%, rgba(212,175,55,0.3) 80%, transparent)' }} />
 
-          {processData.map((step, i) => (
+          {safeSteps.map((step, i) => (
             <Reveal key={step.step} delay={i * 120}>
               <div className="group relative text-center">
                 {/* Step circle */}
                 <div className="relative mx-auto w-28 h-28 mb-7">
                   {/* Outer ring */}
-                  <div className="absolute inset-0 rounded-full border border-white/10 group-hover:border-red-500/30 transition-colors duration-500" />
+                  <div className="absolute inset-0 rounded-full border border-white/10 group-hover:border-gold-500/30 transition-colors duration-500" />
                   {/* Inner circle */}
-                  <div className="absolute inset-2 rounded-full bg-slate-900 border border-white/[0.08] group-hover:border-red-500/20 flex flex-col items-center justify-center gap-1 transition-colors duration-500">
-                    <div className="text-slate-400 group-hover:text-red-400 transition-colors duration-300">
+                  <div className="absolute inset-2 rounded-full bg-slate-900 border border-white/[0.08] group-hover:border-gold-500/20 flex flex-col items-center justify-center gap-1 transition-colors duration-500">
+                    <div className="text-slate-400 group-hover:text-gold-300 transition-colors duration-300">
                       {stepIcons[i]}
                     </div>
-                    <span className="text-[10px] font-black tracking-widest text-red-500/60 group-hover:text-red-400 transition-colors duration-300">
+                    <span className="text-[10px] font-black tracking-widest text-gold-500/70 group-hover:text-gold-300 transition-colors duration-300">
                       {step.step}
                     </span>
                   </div>
                   {/* Glow on hover */}
                   <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"
-                    style={{ boxShadow: '0 0 30px rgba(239,68,68,0.2)' }} />
+                    style={{ boxShadow: '0 0 30px rgba(212,175,55,0.22)' }} />
                 </div>
 
-                <h3 className="text-white font-bold text-lg mb-3 group-hover:text-red-100 transition-colors duration-300">
+                <h3 className="text-white font-bold text-lg mb-3 group-hover:text-gold-100 transition-colors duration-300">
                   {step.title}
                 </h3>
                 <p className="text-slate-500 text-sm leading-relaxed max-w-[180px] mx-auto">
@@ -86,7 +88,7 @@ export default function ProcessSection() {
             <p className="text-slate-400 text-sm mb-4">Ready to start your project?</p>
             <a
               href="/#contact"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-gradient-to-r from-red-600 to-orange-500 text-white text-sm font-semibold hover:shadow-lg hover:shadow-red-500/30 transition-all duration-300 hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-gradient-to-r from-navy-900 via-navy-700 to-gold-500 text-white text-sm font-semibold hover:shadow-lg hover:shadow-gold-500/20 transition-all duration-300 hover:-translate-y-0.5"
             >
               Book Free Consultation
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
