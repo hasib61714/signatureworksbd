@@ -3,12 +3,13 @@
 import { useState } from 'react'
 import { ArrowRight, MessageCircle, Send } from 'lucide-react'
 import emailjs from '@emailjs/browser'
-import { WHATSAPP_NUMBER } from '@/shared/constants/constants'
+import useSiteContactSettings from '@/shared/hooks/useSiteContactSettings'
 import { supabase } from '@/lib/supabase'
 
 export default function ServiceInquiryForm({ serviceName }) {
   const [form, setForm] = useState({ name: '', phone: '', location: '', message: '' })
   const [status, setStatus] = useState('idle')
+  const { whatsappNumber } = useSiteContactSettings()
 
   const handleChange = (event) => {
     const { name, value } = event.target
@@ -110,7 +111,7 @@ export default function ServiceInquiryForm({ serviceName }) {
               <Send className="h-4 w-4" />
               <span>{status === 'sending' ? 'Sending...' : 'Send inquiry'}</span>
             </button>
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`} target="_blank" rel="noreferrer" className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
+            <a href={`https://wa.me/${whatsappNumber}?text=${message}`} target="_blank" rel="noreferrer" className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10">
               <MessageCircle className="h-4 w-4" />
               <span>WhatsApp</span>
             </a>

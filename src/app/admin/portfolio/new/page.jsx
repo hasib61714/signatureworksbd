@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import MediaUploadField from '@/shared/components/ui/MediaUploadField'
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -16,11 +17,13 @@ export default function NewPortfolioPage() {
   const [form, setForm] = useState({
     title: '', slug: '', subtitle: '', category: 'Construction',
     location: '', year: new Date().getFullYear().toString(),
-    image: '', description: '', full_description: '',
+    image: '', before_image: '', after_image: '', video_url: '',
+    description: '', full_description: '', budget: '',
     client: '', area: '', duration: '', featured: false, order_index: 0,
   })
   const [highlights, setHighlights] = useState([''])
   const [gallery, setGallery] = useState([''])
+  const [team, setTeam] = useState('')
 
   const set = (k, v) => setForm(p => ({ ...p, [k]: v }))
 
@@ -38,6 +41,7 @@ export default function NewPortfolioPage() {
       ...form,
       highlights: highlights.filter(Boolean),
       gallery: gallery.filter(Boolean),
+      team: team ? team.split(',').map(item => item.trim()).filter(Boolean) : [],
     }])
     if (err) { setError(err.message); setSaving(false); return }
     router.push('/admin/portfolio')
@@ -111,13 +115,63 @@ export default function NewPortfolioPage() {
               <input value={form.duration} onChange={e => set('duration', e.target.value)} className={inputCls} placeholder="14 months" />
             </div>
           </div>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label className={labelCls}>Budget</label>
+              <input value={form.budget} onChange={e => set('budget', e.target.value)} className={inputCls} placeholder="৳ 45L" />
+            </div>
+            <div>
+              <label className={labelCls}>Team Members</label>
+              <input value={team} onChange={e => setTeam(e.target.value)} className={inputCls} placeholder="Architect, Site Engineer, Interior Designer" />
+            </div>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
           <h2 className="font-semibold text-gray-900 text-sm border-b border-gray-100 pb-3">Images</h2>
           <div>
-            <label className={labelCls}>Cover Image URL *</label>
-            <input required value={form.image} onChange={e => set('image', e.target.value)} className={inputCls} placeholder="https://..." />
+            <label className={labelCls}>Cover Image *</label>
+            <MediaUploadField
+              label="Cover Image"
+              value={form.image}
+              onChange={(nextValue) => set('image', nextValue)}
+              placeholder="Paste image URL or upload"
+              required
+              className={inputCls}
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label className={labelCls}>Before Image</label>
+              <MediaUploadField
+                label="Before Image"
+                value={form.before_image}
+                onChange={(nextValue) => set('before_image', nextValue)}
+                placeholder="Paste image URL or upload"
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>After Image</label>
+              <MediaUploadField
+                label="After Image"
+                value={form.after_image}
+                onChange={(nextValue) => set('after_image', nextValue)}
+                placeholder="Paste image URL or upload"
+                className={inputCls}
+              />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>Video</label>
+            <MediaUploadField
+              label="Video URL"
+              value={form.video_url}
+              onChange={(nextValue) => set('video_url', nextValue)}
+              placeholder="Paste video URL or upload"
+              className={inputCls}
+            />
           </div>
           <div>
             <label className={labelCls}>Gallery Images (URLs)</label>

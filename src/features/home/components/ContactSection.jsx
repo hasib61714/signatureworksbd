@@ -4,13 +4,14 @@ import { ArrowRight } from 'lucide-react'
 import Container from '@/shared/components/ui/Container'
 import Button from '@/shared/components/ui/Button'
 import Reveal from '@/shared/components/ui/Reveal'
-import { PHONE_NUMBER, WHATSAPP_NUMBER, EMAIL } from '@/shared/constants/constants'
+import useSiteContactSettings from '@/shared/hooks/useSiteContactSettings'
 import { supabase } from '@/lib/supabase'
 import emailjs from '@emailjs/browser'
 
 export default function ContactSection() {
   const [form, setForm] = useState({ name: '', phone: '', email: '', service: '', budget: '', message: '' })
   const [status, setStatus] = useState(null)
+  const { phoneNumber, whatsappNumber, email } = useSiteContactSettings()
 
   const handleChange = e => setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
 
@@ -86,8 +87,8 @@ export default function ContactSection() {
         </svg>
       ),
       label: 'Phone',
-      value: PHONE_NUMBER,
-      href: `tel:${PHONE_NUMBER}`,
+      value: phoneNumber,
+      href: `tel:${phoneNumber}`,
     },
     {
       icon: (
@@ -97,7 +98,7 @@ export default function ContactSection() {
       ),
       label: 'WhatsApp',
       value: 'Chat directly',
-      href: `https://wa.me/${WHATSAPP_NUMBER}`,
+      href: `https://wa.me/${whatsappNumber}`,
       iconColor: 'text-[#25D366]',
     },
     {
@@ -107,8 +108,8 @@ export default function ContactSection() {
         </svg>
       ),
       label: 'Email',
-      value: EMAIL,
-      href: `mailto:${EMAIL}`,
+      value: email,
+      href: `mailto:${email}`,
     },
     {
       icon: (
@@ -265,7 +266,7 @@ export default function ContactSection() {
                     <label className="block text-slate-400 text-xs font-semibold tracking-wide uppercase mb-2">Project Description</label>
                     <textarea name="message" value={form.message} onChange={handleChange} rows={4} placeholder="Tell us about your project..." className={inputCls + ' resize-none'} />
                   </div>
-                  <Button variant="primary" size="lg" className="w-full justify-center" onClick={() => {}}>
+                  <Button type="submit" disabled={status === 'sending'} variant="primary" size="lg" className="w-full justify-center">
                     {status === 'sending' ? 'Sending...' : 'Send Message'}
                     {status !== 'sending' && (
                       <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -275,7 +276,7 @@ export default function ContactSection() {
                   </Button>
                   <p className="text-center text-slate-500 text-xs">
                     Or reach us via{' '}
-                    <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" rel="noreferrer" className="text-[#25D366] hover:underline font-medium">
+                    <a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" className="text-[#25D366] hover:underline font-medium">
                       WhatsApp
                     </a>
                   </p>

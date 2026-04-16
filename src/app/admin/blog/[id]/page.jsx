@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import MediaUploadField from '@/shared/components/ui/MediaUploadField'
 
 export default function EditBlogPage() {
   const router = useRouter()
@@ -79,7 +80,16 @@ export default function EditBlogPage() {
             <div><label className={labelCls}>Author</label><input value={form.author || ''} onChange={e => set('author', e.target.value)} className={inputCls} /></div>
             <div><label className={labelCls}>Tags (comma-separated)</label><input value={form.tags || ''} onChange={e => set('tags', e.target.value)} className={inputCls} /></div>
           </div>
-          <div><label className={labelCls}>Cover Image URL</label><input value={form.cover_image || ''} onChange={e => set('cover_image', e.target.value)} className={inputCls} /></div>
+          <div>
+            <label className={labelCls}>Cover Image</label>
+            <MediaUploadField
+              label="Cover Image"
+              value={form.cover_image || ''}
+              onChange={(nextValue) => set('cover_image', nextValue)}
+              placeholder="Paste image URL or upload"
+              className={inputCls}
+            />
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-6">

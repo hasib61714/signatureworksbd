@@ -2,7 +2,7 @@
 import { useState } from 'react'
 import { ArrowRight, RotateCcw } from 'lucide-react'
 import Link from 'next/link'
-import { WHATSAPP_NUMBER } from '@/shared/constants/constants'
+import useSiteContactSettings from '@/shared/hooks/useSiteContactSettings'
 
 // ── BDT cost per sqft by type × grade (2024 Dhaka rates) ──────────────────
 const RATES = {
@@ -108,6 +108,7 @@ export default function CostCalculatorClient() {
   const [answers, setAnswers] = useState({ type: '', grade: '', location: '', floors: '' })
   const [area, setArea] = useState('')
   const [showResult, setShowResult] = useState(false)
+  const { whatsappNumber } = useSiteContactSettings()
 
   const showFloors = answers.type === 'residential' || answers.type === 'commercial'
 
@@ -186,7 +187,7 @@ export default function CostCalculatorClient() {
 
         <div className="flex flex-col sm:flex-row gap-3">
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waMsg}`}
+            href={`https://wa.me/${whatsappNumber}?text=${waMsg}`}
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-[#25D366] text-white font-semibold text-sm hover:bg-[#1ebe5d] transition-colors active:scale-95"

@@ -1,21 +1,27 @@
 'use client'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { portfolioCategories, portfolioData } from '@/data'
+import { portfolioData } from '@/data'
 
-export default function PortfolioGrid() {
+export default function PortfolioGrid({ projects = portfolioData }) {
   const [activeCategory, setActiveCategory] = useState('All')
+  const allProjects = projects?.length ? projects : portfolioData
+
+  const categories = useMemo(() => {
+    const dynamicCategories = allProjects.map((project) => project.category).filter(Boolean)
+    return ['All', ...new Set(dynamicCategories)]
+  }, [allProjects])
 
   const filtered = activeCategory === 'All'
-    ? portfolioData
-    : portfolioData.filter(p => p.category === activeCategory)
+    ? allProjects
+    : allProjects.filter((project) => project.category === activeCategory)
 
   return (
     <div>
       {/* Category Filter */}
       <div className="flex flex-wrap gap-3 mb-10">
-        {portfolioCategories.map(cat => (
+        {categories.map((cat) => (
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
@@ -34,7 +40,7 @@ export default function PortfolioGrid() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((project) => (
           <Link
-            key={project.id}
+            key={project.id || project.slug}
             href={`/portfolio/${project.slug}`}
             className="group relative rounded-2xl overflow-hidden bg-navy-900 aspect-[4/3] block w-full"
           >
@@ -60,9 +66,9 @@ export default function PortfolioGrid() {
               </span>
               <h3 className="text-white font-bold text-base font-serif leading-snug">{project.title}</h3>
               <div className="flex items-center gap-3 mt-1">
-                <p className="text-slate-400 text-xs">{project.location}</p>
+                <p className="text-slate-400 text-xs">{project.location || 'Bangladesh'}</p>
                 <span className="text-slate-600">·</span>
-                <p className="text-gold-400 text-xs font-medium">{project.budget}</p>
+                <p className="text-gold-400 text-xs font-medium">{project.budget || project.subtitle || project.year}</p>
               </div>
             </div>
 

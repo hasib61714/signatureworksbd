@@ -5,8 +5,8 @@ import Container from '@/shared/components/ui/Container'
 import Reveal from '@/shared/components/ui/Reveal'
 import { portfolioData } from '@/data'
 
-export default function PortfolioPreview() {
-  const preview = portfolioData.slice(0, 4)
+export default function PortfolioPreview({ projects = portfolioData }) {
+  const preview = (projects?.length ? projects : portfolioData).slice(0, 4)
 
   return (
     <section id="portfolio" className="py-24 bg-slate-50 dark:bg-slate-900">
@@ -42,7 +42,7 @@ export default function PortfolioPreview() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {preview.map((project, i) => (
-            <Reveal key={project.id} delay={i * 80}>
+            <Reveal key={project.id || project.slug} delay={i * 80}>
               <Link
                 href={`/portfolio/${project.slug}`}
                 className="group relative rounded-2xl overflow-hidden bg-slate-900 aspect-[4/5] block"

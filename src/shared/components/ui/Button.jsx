@@ -32,7 +32,7 @@ export default function Button({
   ...props
 }) {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 active:scale-95 cursor-pointer select-none'
+    'inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-gold-500 active:scale-95 cursor-pointer select-none disabled:opacity-60 disabled:cursor-not-allowed disabled:pointer-events-none'
   const mobileClass = fullWidthOnMobile ? 'w-full sm:w-auto' : ''
   const classes = `${base} ${variants[variant] || variants.primary} ${sizes[size]} ${mobileClass} ${className}`
 

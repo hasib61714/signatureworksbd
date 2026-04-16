@@ -4,8 +4,15 @@ import Container from '@/shared/components/ui/Container'
 import Reveal from '@/shared/components/ui/Reveal'
 import { blogData } from '@/data'
 
-export default function BlogSection() {
-  const posts = blogData.slice(0, 3)
+function formatDate(value) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
+
+export default function BlogSection({ posts = blogData }) {
+  const safePosts = (posts?.length ? posts : blogData).slice(0, 3)
 
   return (
     <section className="py-24 bg-white dark:bg-slate-950">
@@ -40,13 +47,12 @@ export default function BlogSection() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          {posts.map((post, i) => (
-            <Reveal key={post.slug} delay={i * 100}>
+          {safePosts.map((post, i) => (
+            <Reveal key={post.id || post.slug} delay={i * 100}>
               <Link href={`/blog/${post.slug}`} className="group block bg-slate-50 dark:bg-slate-900/50 rounded-2xl overflow-hidden border border-slate-200 dark:border-white/[0.06] hover:border-gold-200 dark:hover:border-gold-500/20 hover:shadow-lg hover:shadow-gold-500/5 transition-all duration-300">
-                {/* Cover image */}
                 <div className="relative aspect-[16/9] overflow-hidden">
                   <Image
-                    src={post.coverImage}
+                    src={post.coverImage || post.cover_image}
                     alt={post.title}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -59,12 +65,11 @@ export default function BlogSection() {
                   </div>
                 </div>
 
-                {/* Content */}
                 <div className="p-6">
                   <div className="flex items-center gap-3 text-xs text-slate-400 mb-3">
-                    <span>{post.publishedAt}</span>
+                    <span>{formatDate(post.publishedAt || post.published_at)}</span>
                     <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-600" />
-                    <span>{post.readTime}</span>
+                    <span>{post.readTime || post.read_time}</span>
                   </div>
                   <h3 className="text-slate-900 dark:text-white font-semibold text-base leading-snug mb-2 group-hover:text-gold-700 dark:group-hover:text-gold-300 transition-colors duration-200 line-clamp-2">
                     {post.title}

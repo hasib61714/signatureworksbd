@@ -6,7 +6,7 @@ import Button from '@/shared/components/ui/Button'
 import PageHero from '@/shared/components/layout/PageHero'
 import ServiceFaqs from '@/features/services/components/ServiceFaqs'
 import ServiceInquiryForm from '@/features/services/components/ServiceInquiryForm'
-import { getServiceBySlug, servicePages } from '@/features/services/data/servicePages'
+import { getServicesContent } from '@/lib/db/siteSettings'
 
 const icons = {
   'architectural-design': Ruler,
@@ -15,12 +15,27 @@ const icons = {
   renovation: RefreshCcw,
 }
 
-export function generateStaticParams() {
-  return servicePages.map((service) => ({ slug: service.slug }))
+export const dynamic = 'force-dynamic'
+
+function getEmbedUrl(url) {
+  if (!url) return ''
+  if (url.includes('youtube.com/watch?v=')) {
+    return `https://www.youtube.com/embed/${url.split('v=')[1].split('&')[0]}`
+  }
+  if (url.includes('youtu.be/')) {
+    return `https://www.youtube.com/embed/${url.split('youtu.be/')[1].split('?')[0]}`
+  }
+  return url
 }
 
-export function generateMetadata({ params }) {
-  const service = getServiceBySlug(params.slug)
+export async function generateStaticParams() {
+  const { services } = await getServicesContent()
+  return services.map((service) => ({ slug: service.slug }))
+}
+
+export async function generateMetadata({ params }) {
+  const { services } = await getServicesContent()
+  const service = services.find((item) => item.slug === params.slug)
 
   if (!service) {
     return {
@@ -34,12 +49,14 @@ export function generateMetadata({ params }) {
   }
 }
 
-export default function ServiceDetailPage({ params }) {
-  const service = getServiceBySlug(params.slug)
+export default async function ServiceDetailPage({ params }) {
+  const { services } = await getServicesContent()
+  const service = services.find((item) => item.slug === params.slug)
 
   if (!service) notFound()
 
   const Icon = icons[service.slug] || Building2
+  const videoUrl = service.videoUrl || service.video_url
 
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
@@ -73,6 +90,26 @@ export default function ServiceDetailPage({ params }) {
               </div>
             </div>
           </section>
+
+          {videoUrl && (
+            <section className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm dark:border-white/10 dark:bg-slate-950/70 lg:col-span-2">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Video showcase</p>
+                  <h2 className="mt-1 text-xl font-black text-navy-900 dark:text-white">Service walkthrough</h2>
+                </div>
+              </div>
+              <div className="overflow-hidden rounded-2xl border border-slate-200 dark:border-white/10 aspect-video bg-slate-950">
+                <iframe
+                  src={getEmbedUrl(videoUrl)}
+                  title={`${service.navLabel} video`}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            </section>
+          )}
 
           <ServiceInquiryForm serviceName={service.navLabel} />
 

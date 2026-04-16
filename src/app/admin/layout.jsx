@@ -50,7 +50,7 @@ const NAV = [
     ),
   },
   {
-    label: 'Site Content',
+    label: 'Full CMS',
     href: '/admin/settings',
     icon: (
       <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.75}>

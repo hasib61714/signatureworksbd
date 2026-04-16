@@ -4,6 +4,7 @@ import { X } from 'lucide-react'
 import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import MediaUploadField from '@/shared/components/ui/MediaUploadField'
 
 export default function EditPortfolioPage() {
   const router = useRouter()
@@ -14,6 +15,7 @@ export default function EditPortfolioPage() {
   const [form, setForm] = useState(null)
   const [highlights, setHighlights] = useState([''])
   const [gallery, setGallery] = useState([''])
+  const [team, setTeam] = useState('')
 
   useEffect(() => {
     if (!supabase) return
@@ -23,6 +25,7 @@ export default function EditPortfolioPage() {
           setForm(data)
           setHighlights(data.highlights?.length ? data.highlights : [''])
           setGallery(data.gallery?.length ? data.gallery : [''])
+          setTeam(Array.isArray(data.team) ? data.team.join(', ') : data.team || '')
         }
         setLoading(false)
       })
@@ -42,6 +45,7 @@ export default function EditPortfolioPage() {
       ...form,
       highlights: highlights.filter(Boolean),
       gallery: gallery.filter(Boolean),
+      team: team ? team.split(',').map(item => item.trim()).filter(Boolean) : [],
       updated_at: new Date().toISOString(),
     }).eq('id', id)
     if (err) { setError(err.message); setSaving(false); return }
@@ -101,11 +105,56 @@ export default function EditPortfolioPage() {
             <div><label className={labelCls}>Area</label><input value={form.area || ''} onChange={e => set('area', e.target.value)} className={inputCls} /></div>
             <div><label className={labelCls}>Duration</label><input value={form.duration || ''} onChange={e => set('duration', e.target.value)} className={inputCls} /></div>
           </div>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div><label className={labelCls}>Budget</label><input value={form.budget || ''} onChange={e => set('budget', e.target.value)} className={inputCls} /></div>
+            <div><label className={labelCls}>Team Members</label><input value={team} onChange={e => setTeam(e.target.value)} className={inputCls} placeholder="Architect, Site Engineer, Interior Designer" /></div>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
           <h2 className="font-semibold text-gray-900 text-sm border-b border-gray-100 pb-3">Images</h2>
-          <div><label className={labelCls}>Cover Image URL</label><input value={form.image || ''} onChange={e => set('image', e.target.value)} className={inputCls} /></div>
+          <div>
+            <label className={labelCls}>Cover Image</label>
+            <MediaUploadField
+              label="Cover Image"
+              value={form.image || ''}
+              onChange={(nextValue) => set('image', nextValue)}
+              placeholder="Paste image URL or upload"
+              className={inputCls}
+            />
+          </div>
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label className={labelCls}>Before Image</label>
+              <MediaUploadField
+                label="Before Image"
+                value={form.before_image || ''}
+                onChange={(nextValue) => set('before_image', nextValue)}
+                placeholder="Paste image URL or upload"
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <label className={labelCls}>After Image</label>
+              <MediaUploadField
+                label="After Image"
+                value={form.after_image || ''}
+                onChange={(nextValue) => set('after_image', nextValue)}
+                placeholder="Paste image URL or upload"
+                className={inputCls}
+              />
+            </div>
+          </div>
+          <div>
+            <label className={labelCls}>Video</label>
+            <MediaUploadField
+              label="Video URL"
+              value={form.video_url || ''}
+              onChange={(nextValue) => set('video_url', nextValue)}
+              placeholder="Paste video URL or upload"
+              className={inputCls}
+            />
+          </div>
           <div>
             <label className={labelCls}>Gallery Images</label>
             {gallery.map((url, i) => (

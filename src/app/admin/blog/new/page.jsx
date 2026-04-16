@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { supabase } from '@/lib/supabase'
+import MediaUploadField from '@/shared/components/ui/MediaUploadField'
 
 function slugify(str) {
   return str.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
@@ -98,8 +99,15 @@ export default function NewBlogPage() {
             </div>
           </div>
           <div>
-            <label className={labelCls}>Cover Image URL *</label>
-            <input required value={form.cover_image} onChange={e => set('cover_image', e.target.value)} className={inputCls} placeholder="https://..." />
+            <label className={labelCls}>Cover Image *</label>
+            <MediaUploadField
+              label="Cover Image"
+              value={form.cover_image}
+              onChange={(nextValue) => set('cover_image', nextValue)}
+              placeholder="Paste image URL or upload"
+              required
+              className={inputCls}
+            />
           </div>
         </div>
 

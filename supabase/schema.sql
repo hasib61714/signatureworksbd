@@ -40,11 +40,22 @@ create table if not exists portfolio_projects (
   client text,
   area text,
   duration text,
+  budget text,
+  team jsonb not null default '[]'::jsonb,
+  before_image text,
+  after_image text,
+  video_url text,
   featured boolean not null default false,
   order_index integer not null default 0,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table if exists portfolio_projects add column if not exists budget text;
+alter table if exists portfolio_projects add column if not exists team jsonb not null default '[]'::jsonb;
+alter table if exists portfolio_projects add column if not exists before_image text;
+alter table if exists portfolio_projects add column if not exists after_image text;
+alter table if exists portfolio_projects add column if not exists video_url text;
 
 create table if not exists blog_posts (
   id uuid primary key default gen_random_uuid(),
@@ -138,6 +149,35 @@ on site_settings for all
 to anon, authenticated
 using (true)
 with check (true);
+
+insert into storage.buckets (id, name, public)
+values ('site-media', 'site-media', true)
+on conflict (id) do nothing;
+
+drop policy if exists "Public read site media" on storage.objects;
+create policy "Public read site media"
+on storage.objects for select
+to anon, authenticated
+using (bucket_id = 'site-media');
+
+drop policy if exists "Public upload site media" on storage.objects;
+create policy "Public upload site media"
+on storage.objects for insert
+to anon, authenticated
+with check (bucket_id = 'site-media');
+
+drop policy if exists "Public update site media" on storage.objects;
+create policy "Public update site media"
+on storage.objects for update
+to anon, authenticated
+using (bucket_id = 'site-media')
+with check (bucket_id = 'site-media');
+
+drop policy if exists "Public delete site media" on storage.objects;
+create policy "Public delete site media"
+on storage.objects for delete
+to anon, authenticated
+using (bucket_id = 'site-media');
 
 create index if not exists idx_contact_submissions_submitted_at on contact_submissions (submitted_at desc);
 create index if not exists idx_bookings_submitted_at on bookings (submitted_at desc);

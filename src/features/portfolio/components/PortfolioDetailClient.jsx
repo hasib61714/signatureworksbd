@@ -48,15 +48,37 @@ function GalleryLightbox({ images, initialIndex, onClose }) {
   )
 }
 
+function getEmbedUrl(url) {
+  if (!url) return ''
+  if (url.includes('youtube.com/watch?v=')) {
+    return `https://www.youtube.com/embed/${url.split('v=')[1].split('&')[0]}`
+  }
+  if (url.includes('youtu.be/')) {
+    return `https://www.youtube.com/embed/${url.split('youtu.be/')[1].split('?')[0]}`
+  }
+  return url
+}
+
 export default function PortfolioDetailClient({ project, prevProject, nextProject }) {
   const [lightbox, setLightbox] = useState(null)
+  const gallery = Array.isArray(project.gallery) && project.gallery.length ? project.gallery : [project.image].filter(Boolean)
+  const highlights = Array.isArray(project.highlights) ? project.highlights : []
+  const team = Array.isArray(project.team)
+    ? project.team
+    : typeof project.team === 'string'
+      ? project.team.split(',').map((item) => item.trim()).filter(Boolean)
+      : []
+  const beforeImage = project.beforeImage || project.before_image
+  const afterImage = project.afterImage || project.after_image
+  const videoUrl = project.videoUrl || project.video_url
+  const fullDescription = project.fullDescription || project.full_description || project.description || ''
+  const paragraphs = fullDescription.split('\n\n').filter(Boolean)
 
   return (
     <main className="min-h-screen bg-navy-950 pt-24 pb-20">
-      {/* Hero image */}
       <div className="relative h-[50vh] sm:h-[60vh] overflow-hidden">
         <Image
-          src={project.gallery[0]}
+          src={gallery[0] || project.image}
           alt={project.title}
           fill
           sizes="100vw"
@@ -88,7 +110,7 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
             <div>
               <h2 className="text-white text-xl font-bold font-serif mb-4">Project Overview</h2>
               <div className="space-y-4">
-                {project.fullDescription.split('\n\n').map((para, i) => (
+                {paragraphs.map((para, i) => (
                   <p key={i} className="text-slate-300 leading-relaxed">{para}</p>
                 ))}
               </div>
@@ -98,7 +120,7 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
             <div>
               <h2 className="text-white text-xl font-bold font-serif mb-4">Key Highlights</h2>
               <ul className="grid sm:grid-cols-2 gap-3">
-                {project.highlights.map((h, i) => (
+                {highlights.map((h, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <span className="w-5 h-5 rounded-full bg-gold-500/20 border border-gold-500/40 flex items-center justify-center shrink-0 mt-0.5">
                       <svg className="w-2.5 h-2.5 text-gold-400" fill="currentColor" viewBox="0 0 8 8">
@@ -112,19 +134,33 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
             </div>
 
             {/* Before / After */}
-            {project.beforeImage && project.afterImage && (
+            {beforeImage && afterImage && (
               <div>
                 <h2 className="text-white text-xl font-bold font-serif mb-4">Before & After</h2>
-                <BeforeAfterSlider beforeImage={project.beforeImage} afterImage={project.afterImage} />
+                <BeforeAfterSlider beforeImage={beforeImage} afterImage={afterImage} />
               </div>
             )}
 
-            {/* Gallery */}
-            {project.gallery.length > 1 && (
+            {videoUrl && (
+              <div>
+                <h2 className="text-white text-xl font-bold font-serif mb-4">Project Video</h2>
+                <div className="overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-950 aspect-video">
+                  <iframe
+                    src={getEmbedUrl(videoUrl)}
+                    title={`${project.title} video`}
+                    className="h-full w-full"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
+
+            {gallery.length > 1 && (
               <div>
                 <h2 className="text-white text-xl font-bold font-serif mb-4">Gallery</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  {project.gallery.map((img, i) => (
+                  {gallery.map((img, i) => (
                     <button
                       key={i}
                       onClick={() => setLightbox(i)}
@@ -163,18 +199,19 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
               ))}
             </div>
 
-            {/* Team */}
-            <div className="bg-navy-900 border border-white/[0.08] rounded-2xl p-6">
-              <h3 className="text-white font-bold font-serif mb-4">Our Team</h3>
-              <ul className="space-y-2">
-                {project.team.map((member, i) => (
-                  <li key={i} className="flex items-center gap-2 text-slate-300 text-sm">
-                    <span className="w-1.5 h-1.5 rounded-full bg-gold-400 shrink-0" />
-                    {member}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {team.length > 0 && (
+              <div className="bg-navy-900 border border-white/[0.08] rounded-2xl p-6">
+                <h3 className="text-white font-bold font-serif mb-4">Our Team</h3>
+                <ul className="space-y-2">
+                  {team.map((member, i) => (
+                    <li key={i} className="flex items-center gap-2 text-slate-300 text-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-gold-400 shrink-0" />
+                      {member}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             {/* CTA */}
             <div className="bg-gradient-to-br from-gold-600/20 to-gold-400/5 border border-gold-500/20 rounded-2xl p-6 text-center">
@@ -224,7 +261,7 @@ export default function PortfolioDetailClient({ project, prevProject, nextProjec
 
       {/* Lightbox */}
       {lightbox !== null && (
-        <GalleryLightbox images={project.gallery} initialIndex={lightbox} onClose={() => setLightbox(null)} />
+        <GalleryLightbox images={gallery} initialIndex={lightbox} onClose={() => setLightbox(null)} />
       )}
     </main>
   )

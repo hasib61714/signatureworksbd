@@ -1,9 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
-import { PHONE_NUMBER, WHATSAPP_NUMBER } from '@/shared/constants/constants'
+import useSiteContactSettings from '@/shared/hooks/useSiteContactSettings'
 
 export default function FloatingButtons() {
   const [showTopBtn, setShowTopBtn] = useState(false)
+  const { phoneNumber, whatsappNumber } = useSiteContactSettings()
 
   useEffect(() => {
     const onScroll = () => setShowTopBtn(window.scrollY > 400)
@@ -30,7 +31,7 @@ export default function FloatingButtons() {
 
       {/* Call Now */}
       <a
-        href={`tel:${PHONE_NUMBER}`}
+        href={`tel:${phoneNumber}`}
         aria-label="Call Now"
         className="w-14 h-14 rounded-full bg-navy-950 border border-gold-500/20 flex items-center justify-center shadow-xl hover:bg-gold-500 hover:border-gold-400 hover:scale-110 hover:shadow-gold-500/30 transition-all duration-300"
       >
@@ -41,7 +42,7 @@ export default function FloatingButtons() {
 
       {/* WhatsApp */}
       <a
-        href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hello%20Signature%20Works%2C%20I%20am%20interested%20in%20your%20services.`}
+        href={`https://wa.me/${whatsappNumber}?text=Hello%20Signature%20Works%2C%20I%20am%20interested%20in%20your%20services.`}
         target="_blank"
         rel="noreferrer"
         aria-label="Chat on WhatsApp"

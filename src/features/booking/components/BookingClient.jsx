@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { RotateCcw } from 'lucide-react'
-import { WHATSAPP_NUMBER } from '@/shared/constants/constants'
+import useSiteContactSettings from '@/shared/hooks/useSiteContactSettings'
 import { supabase } from '@/lib/supabase'
 import emailjs from '@emailjs/browser'
 
@@ -39,7 +39,8 @@ export default function BookingClient() {
   const [selectedTime, setSelectedTime] = useState(null)
   const [meetingType, setMeetingType] = useState('in_person')
   const [form, setForm] = useState({ name: '', phone: '', topic: '' })
-  const [status, setStatus] = useState(null) // null | 'submitting' | 'success' | 'error'
+  const [status, setStatus] = useState(null)
+  const { whatsappNumber } = useSiteContactSettings()
 
   const handleChange = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
@@ -106,7 +107,7 @@ export default function BookingClient() {
     const msg = encodeURIComponent(
       `Hello, I'd like to book a consultation.\n\nDate: ${dateStr}\nTime: ${selectedTime}\nType: ${meetingType}\nName: ${form.name}\nPhone: ${form.phone}\n${form.topic ? `Topic: ${form.topic}` : ''}`
     )
-    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`, '_blank')
+    window.open(`https://wa.me/${whatsappNumber}?text=${msg}`, '_blank')
   }
 
   if (status === 'success') {

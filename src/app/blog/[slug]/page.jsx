@@ -2,41 +2,58 @@ import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 import Container from '@/shared/components/ui/Container'
-import { blogData } from '@/data'
 import BlogContent from '@/features/blog/components/BlogContent'
+import { getBlogBySlug, getBlogPosts } from '@/lib/db/blog'
+
+export const dynamic = 'force-dynamic'
+
+function formatDate(value, options = { day: 'numeric', month: 'long', year: 'numeric' }) {
+  if (!value) return ''
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return value
+  return date.toLocaleDateString('en-GB', options)
+}
 
 export async function generateStaticParams() {
-  return blogData.map(p => ({ slug: p.slug }))
+  const posts = await getBlogPosts()
+  return posts.map((post) => ({ slug: post.slug }))
 }
 
 export async function generateMetadata({ params }) {
-  const post = blogData.find(p => p.slug === params.slug)
+  const post = await getBlogBySlug(params.slug)
   if (!post) return {}
+
   return {
     title: post.title,
     description: post.excerpt,
-    openGraph: { images: [post.coverImage] },
+    openGraph: { images: [post.coverImage || post.cover_image] },
   }
 }
 
-export default function BlogPostPage({ params }) {
-  const post = blogData.find(p => p.slug === params.slug)
+export default async function BlogPostPage({ params }) {
+  const [post, posts] = await Promise.all([
+    getBlogBySlug(params.slug),
+    getBlogPosts(),
+  ])
+
   if (!post) notFound()
 
-  const currentIdx = blogData.findIndex(p => p.slug === params.slug)
-  const prevPost = blogData[currentIdx - 1] || null
-  const nextPost = blogData[currentIdx + 1] || null
+  const currentIdx = posts.findIndex((item) => item.slug === params.slug)
+  const prevPost = posts[currentIdx - 1] || null
+  const nextPost = posts[currentIdx + 1] || null
+  const tags = Array.isArray(post.tags) ? post.tags : []
+  const coverImage = post.coverImage || post.cover_image
+  const publishedAt = post.publishedAt || post.published_at
+  const readTime = post.readTime || post.read_time
 
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
-      {/* Hero */}
       <div className="relative h-[40vh] sm:h-[50vh] overflow-hidden">
-        <Image src={post.coverImage} alt={post.title} fill sizes="100vw" className="object-cover" />
+        <Image src={coverImage} alt={post.title} fill sizes="100vw" className="object-cover" />
         <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-navy-950 via-white/40 dark:via-navy-950/40 to-transparent" />
       </div>
 
       <Container className="max-w-3xl mt-[-60px] relative">
-        {/* Back */}
         <Link href="/blog" className="inline-flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-navy-900 dark:hover:text-white text-sm mb-6 transition-colors group">
           <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
@@ -44,7 +61,6 @@ export default function BlogPostPage({ params }) {
           All Articles
         </Link>
 
-        {/* Header */}
         <span className="inline-block px-2.5 py-1 rounded-full text-[10px] font-semibold tracking-widest uppercase bg-gold-500/20 text-gold-600 dark:text-gold-400 border border-gold-500/30 mb-4">
           {post.category}
         </span>
@@ -54,24 +70,23 @@ export default function BlogPostPage({ params }) {
         <div className="flex flex-wrap items-center gap-3 text-slate-400 text-sm mb-8 pb-8 border-b border-slate-100 dark:border-white/[0.08]">
           <span className="text-slate-500 dark:text-slate-400">{post.author}</span>
           <span>·</span>
-          <span>{new Date(post.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+          <span>{formatDate(publishedAt)}</span>
           <span>·</span>
-          <span>{post.readTime}</span>
+          <span>{readTime}</span>
         </div>
 
-        {/* Content */}
-        <BlogContent content={post.content} />
+        <BlogContent content={post.content || ''} />
 
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mt-10 pt-8 border-t border-slate-100 dark:border-white/[0.08]">
-          {post.tags.map(tag => (
-            <span key={tag} className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-navy-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10">
-              #{tag}
-            </span>
-          ))}
-        </div>
+        {tags.length > 0 && (
+          <div className="flex flex-wrap gap-2 mt-10 pt-8 border-t border-slate-100 dark:border-white/[0.08]">
+            {tags.map((tag) => (
+              <span key={tag} className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-100 dark:bg-navy-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
 
-        {/* CTA */}
         <div className="mt-10 bg-navy-900 dark:bg-navy-950 border border-white/[0.08] rounded-2xl p-8 text-center">
           <h3 className="text-white text-xl font-bold font-serif mb-2">Ready to start your project?</h3>
           <p className="text-slate-400 text-sm mb-6">Get a free consultation from our team. No obligation.</p>
@@ -85,7 +100,6 @@ export default function BlogPostPage({ params }) {
           </div>
         </div>
 
-        {/* Prev / Next */}
         {(prevPost || nextPost) && (
           <div className="mt-10 grid sm:grid-cols-2 gap-4">
             {prevPost ? (

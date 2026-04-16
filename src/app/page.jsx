@@ -3,6 +3,8 @@ import ExpandableText from '@/shared/components/ui/ExpandableText'
 import Container from '@/shared/components/ui/Container'
 import HeroSection from '@/features/home/components/HeroSection'
 import { getHomeContent } from '@/lib/db/siteSettings'
+import { getBlogPosts } from '@/lib/db/blog'
+import { getPortfolioProjects } from '@/lib/db/portfolio'
 import StatsSection from '@/features/home/components/StatsSection'
 import ServicesSection from '@/features/home/components/ServicesSection'
 import PortfolioPreview from '@/features/home/components/PortfolioPreview'
@@ -13,45 +15,17 @@ import TestimonialsSection from '@/features/home/components/TestimonialsSection'
 import BlogSection from '@/features/home/components/BlogSection'
 import ContactSection from '@/features/home/components/ContactSection'
 
-const signaturePillars = [
-  {
-    title: 'Context-led planning',
-    text: 'Every floor plan starts from site conditions, family routine, ventilation, and sunlight rather than a borrowed template.',
-  },
-  {
-    title: 'Material-first thinking',
-    text: 'We pair warm textures, practical finishes, and local build knowledge to create spaces that look refined and last longer.',
-  },
-  {
-    title: 'Execution clarity',
-    text: 'From concept to handover, timelines, scope, and site decisions stay clear so the final result matches the vision.',
-  },
-]
-
-const projectJourney = [
-  'Discovery call and requirement mapping',
-  'Concept direction with mood and layout ideas',
-  'Detailed build coordination and supervision',
-  'Final styling, handover, and post-project support',
-]
-
-const serviceLens = [
-  {
-    title: 'Residential spaces',
-    text: 'Modern homes designed around comfort, storage, natural light, and family flow.',
-  },
-  {
-    title: 'Commercial interiors',
-    text: 'Office and retail environments that feel branded, efficient, and client-ready.',
-  },
-  {
-    title: 'Renovation upgrades',
-    text: 'Smarter transformations for dated structures without losing budget control.',
-  },
-]
+export const dynamic = 'force-dynamic'
 
 export default async function HomePage() {
-  const { heroSlides, services, testimonials, stats, process, whyUs, about } = await getHomeContent()
+  const { heroSlides, services, testimonials, stats, process, whyUs, about, editorial } = await getHomeContent()
+  const [blogPosts, portfolioProjects] = await Promise.all([
+    getBlogPosts(),
+    getPortfolioProjects(),
+  ])
+  const signaturePillars = editorial?.signaturePillars || []
+  const projectJourney = editorial?.projectJourney || []
+  const serviceLens = editorial?.serviceLens || []
 
   return (
     <main className="overflow-x-hidden bg-white dark:bg-slate-950">
@@ -127,7 +101,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      <PortfolioPreview />
+      <PortfolioPreview projects={portfolioProjects} />
       <ServicesSection services={services} />
 
       <section className="bg-stone-50 py-16 dark:bg-slate-900/40 lg:py-20">
@@ -165,7 +139,7 @@ export default async function HomePage() {
       <AboutSection about={about} />
       <WhyUsSection items={whyUs} />
       <TestimonialsSection testimonials={testimonials} />
-      <BlogSection />
+      <BlogSection posts={blogPosts} />
       <ContactSection />
     </main>
   )

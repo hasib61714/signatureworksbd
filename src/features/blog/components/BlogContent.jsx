@@ -1,9 +1,18 @@
-// Lightweight markdown renderer — supports ##, **bold**, tables, lists, paragraphs
-// No external dependency needed for our controlled content.
+// Lightweight markdown renderer — supports ##, **bold**, tables, lists, images, and video embeds.
 
 function parseLine(line) {
-  // Bold: **text**
   return line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+}
+
+function getEmbedUrl(url) {
+  if (!url) return ''
+  if (url.includes('youtube.com/watch?v=')) {
+    return `https://www.youtube.com/embed/${url.split('v=')[1].split('&')[0]}`
+  }
+  if (url.includes('youtu.be/')) {
+    return `https://www.youtube.com/embed/${url.split('youtu.be/')[1].split('?')[0]}`
+  }
+  return url
 }
 
 function parseContent(content) {
@@ -13,24 +22,36 @@ function parseContent(content) {
 
   while (i < lines.length) {
     const line = lines[i]
+    const trimmed = line.trim()
 
-    // Empty line
-    if (line.trim() === '') {
+    if (trimmed === '') {
       i++
       continue
     }
 
-    // H2
-    if (line.startsWith('## ')) {
-      elements.push({ type: 'h2', content: line.slice(3) })
+    if (trimmed.startsWith('## ')) {
+      elements.push({ type: 'h2', content: trimmed.slice(3) })
       i++
       continue
     }
 
-    // Table
-    if (line.startsWith('|')) {
+    const imageMatch = trimmed.match(/^!\[(.*?)\]\((.*?)\)$/)
+    if (imageMatch) {
+      elements.push({ type: 'image', alt: imageMatch[1] || 'Article image', src: imageMatch[2] })
+      i++
+      continue
+    }
+
+    const videoMatch = trimmed.match(/^\[video:(.*?)\]$/i) || trimmed.match(/^video:\s*(https?:\/\/\S+)/i)
+    if (videoMatch) {
+      elements.push({ type: 'video', src: videoMatch[1].trim() })
+      i++
+      continue
+    }
+
+    if (trimmed.startsWith('|')) {
       const tableLines = []
-      while (i < lines.length && lines[i].startsWith('|')) {
+      while (i < lines.length && lines[i].trim().startsWith('|')) {
         tableLines.push(lines[i])
         i++
       }
@@ -38,23 +59,25 @@ function parseContent(content) {
       continue
     }
 
-    // Unordered list
-    if (line.startsWith('- ')) {
+    if (trimmed.startsWith('- ')) {
       const items = []
-      while (i < lines.length && lines[i].startsWith('- ')) {
-        items.push(lines[i].slice(2))
+      while (i < lines.length && lines[i].trim().startsWith('- ')) {
+        items.push(lines[i].trim().slice(2))
         i++
       }
       elements.push({ type: 'ul', items })
       continue
     }
 
-    // Paragraph
     const paraLines = []
-    while (i < lines.length && lines[i].trim() !== '' && !lines[i].startsWith('## ') && !lines[i].startsWith('- ') && !lines[i].startsWith('|')) {
+    while (i < lines.length) {
+      const current = lines[i].trim()
+      const isSpecial = current === '' || current.startsWith('## ') || current.startsWith('- ') || current.startsWith('|') || current.match(/^!\[(.*?)\]\((.*?)\)$/) || current.match(/^\[video:(.*?)\]$/i) || current.match(/^video:\s*(https?:\/\/\S+)/i)
+      if (isSpecial) break
       paraLines.push(lines[i])
       i++
     }
+
     if (paraLines.length > 0) {
       elements.push({ type: 'p', content: paraLines.join(' ') })
     }
@@ -126,6 +149,27 @@ export default function BlogContent({ content }) {
         }
         if (el.type === 'table') {
           return <TableEl key={i} lines={el.lines} />
+        }
+        if (el.type === 'image') {
+          return (
+            <figure key={i} className="my-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-slate-900/40">
+              <img src={el.src} alt={el.alt} className="w-full object-cover" />
+              <figcaption className="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">{el.alt}</figcaption>
+            </figure>
+          )
+        }
+        if (el.type === 'video') {
+          return (
+            <div key={i} className="my-8 overflow-hidden rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-slate-950 aspect-video">
+              <iframe
+                src={getEmbedUrl(el.src)}
+                title="Embedded video"
+                className="h-full w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          )
         }
         if (el.type === 'p') {
           return (

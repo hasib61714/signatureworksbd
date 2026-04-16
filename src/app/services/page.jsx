@@ -2,12 +2,14 @@ import Link from 'next/link'
 import { ArrowRight, Building2, Hammer, RefreshCcw, Ruler, Sofa } from 'lucide-react'
 import Container from '@/shared/components/ui/Container'
 import PageHero from '@/shared/components/layout/PageHero'
-import { servicePages } from '@/features/services/data/servicePages'
+import { getServicesContent } from '@/lib/db/siteSettings'
 
 export const metadata = {
   title: 'Services',
   description: 'Explore the dedicated architectural design, construction, interior design, and renovation services offered by Signature Works BD.',
 }
+
+export const dynamic = 'force-dynamic'
 
 const icons = {
   'architectural-design': Ruler,
@@ -16,26 +18,24 @@ const icons = {
   renovation: RefreshCcw,
 }
 
-export default function ServicesPage() {
+export default async function ServicesPage() {
+  const { page, services } = await getServicesContent()
+
   return (
     <main className="min-h-screen bg-white dark:bg-navy-950 pt-24 pb-20">
       <Container>
         <div className="mb-12">
           <PageHero
-            label="Our Services"
-            title="Our"
-            accent="Services"
-            description="Browse each service in a clearer way, with page-specific information on scope, workflow, and the right next step."
-            cards={[
-              { title: 'Design', text: 'Planning-led concepts with visual clarity.' },
-              { title: 'Build', text: 'Execution discipline from start to finish.' },
-              { title: 'Upgrade', text: 'Smarter transformation for existing spaces.' },
-            ]}
+            label={page.label}
+            title={page.title}
+            accent={page.accent}
+            description={page.description}
+            cards={page.cards}
           />
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          {servicePages.map((service) => {
+          {services.map((service) => {
             const Icon = icons[service.slug] || Hammer
 
             return (
@@ -60,7 +60,7 @@ export default function ServicesPage() {
                 </p>
 
                 <div className="mt-4 flex flex-wrap gap-2">
-                  {service.idealFor.slice(0, 2).map((item) => (
+                  {(service.idealFor || []).slice(0, 2).map((item) => (
                     <span key={item} className="rounded-full border border-gold-200 bg-gold-50 px-2.5 py-1 text-[10px] font-semibold text-gold-700 dark:border-gold-500/20 dark:bg-gold-500/10 dark:text-gold-300">
                       {item}
                     </span>
