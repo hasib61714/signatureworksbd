@@ -121,7 +121,7 @@ export default function Footer() {
             <p className="text-slate-400 text-sm">
               {copyright.replace('Signature Works BD', '')}{' '}
               <span className="font-semibold bg-gradient-to-r from-gold-400 to-navy-300 bg-clip-text text-transparent">
-                Signature Works BD
+                Signature Works
               </span>
               {'. All rights reserved.'}
             </p>
