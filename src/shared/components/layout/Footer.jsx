@@ -119,7 +119,7 @@ export default function Footer() {
         <Container className="py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             <p className="text-slate-400 text-sm">
-              {copyright.replace('Signature Works BD', '')}{' '}
+              {copyright.replace('Signature Works', '')}{' '}
               <span className="font-semibold bg-gradient-to-r from-gold-400 to-navy-300 bg-clip-text text-transparent">
                 Signature Works
               </span>

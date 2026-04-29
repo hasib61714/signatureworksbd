@@ -615,7 +615,7 @@ create table if not exists blog_posts (
   category text,
   cover_image text,
   content text,
-  author text default 'Signature Works BD',
+  author text default 'Signature Works',
   published_at date default current_date,
   read_time text,
   tags jsonb default '[]',

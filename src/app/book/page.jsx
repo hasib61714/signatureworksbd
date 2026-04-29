@@ -5,7 +5,7 @@ import { getManagedPageContent } from '@/lib/db/siteSettings'
 
 export const metadata = {
   title: 'Book a Consultation',
-  description: 'Book a free 30-minute consultation with Signature Works BD. Choose a date and time that works for you.',
+  description: 'Book a free 30-minute consultation with Signature Works. Choose a date and time that works for you.',
 }
 
 export const dynamic = 'force-dynamic'

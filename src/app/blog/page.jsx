@@ -7,7 +7,7 @@ import { getManagedPageContent } from '@/lib/db/siteSettings'
 
 export const metadata = {
   title: 'Blog — Design & Construction Insights',
-  description: 'Expert articles on construction costs, interior design, materials, and project management in Bangladesh — from the team at Signature Works BD.',
+  description: 'Expert articles on construction costs, interior design, materials, and project management in Bangladesh — from the team at Signature Works.',
 }
 
 export const dynamic = 'force-dynamic'

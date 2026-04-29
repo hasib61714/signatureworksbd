@@ -35,7 +35,7 @@ export default function AdminLoginPage() {
         <div className="flex justify-center mb-8">
           <div className="flex items-center gap-3">
             <div>
-              <p className="text-white font-bold text-sm leading-none">Signature Works BD</p>
+              <p className="text-white font-bold text-sm leading-none">Signature Works</p>
               <p className="text-slate-400 text-xs mt-0.5">Admin Panel</p>
             </div>
           </div>

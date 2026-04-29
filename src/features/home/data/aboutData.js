@@ -1,6 +1,6 @@
 export const aboutData = {
   story:
-    'Founded in Dhaka Division, Signature Works BD was born from a simple belief: every person deserves a space that truly reflects who they are. Over 8 years, we have turned that belief into 150+ completed projects — each one a signature of our commitment to excellence.',
+    'Founded in Dhaka Division, Signature Works was born from a simple belief: every person deserves a space that truly reflects who they are. Over 8 years, we have turned that belief into 150+ completed projects — each one a signature of our commitment to excellence.',
   mission:
     'To deliver exceptional architectural design and construction services that exceed client expectations, respect budget and timelines, and leave a lasting mark on the built environment of Bangladesh.',
   values: ['Excellence', 'Client-First', 'Transparency', 'Sustainable'],

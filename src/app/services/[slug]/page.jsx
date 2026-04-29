@@ -44,7 +44,7 @@ export async function generateMetadata({ params }) {
   }
 
   return {
-    title: `${service.navLabel} | Signature Works BD`,
+    title: `${service.navLabel} | Signature Works`,
     description: service.description,
   }
 }

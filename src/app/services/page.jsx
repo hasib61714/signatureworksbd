@@ -6,7 +6,7 @@ import { getServicesContent } from '@/lib/db/siteSettings'
 
 export const metadata = {
   title: 'Services',
-  description: 'Explore the dedicated architectural design, construction, interior design, and renovation services offered by Signature Works BD.',
+  description: 'Explore the dedicated architectural design, construction, interior design, and renovation services offered by Signature Works.',
 }
 
 export const dynamic = 'force-dynamic'

@@ -87,7 +87,7 @@ export default function AdminLayout({ children }) {
           <Link href="/" target="_blank" className="flex items-center gap-3">
             <div>
               <p className="text-white text-sm font-bold leading-none">Admin Panel</p>
-              <p className="text-slate-400 text-[10px] mt-0.5">Signature Works BD</p>
+              <p className="text-slate-400 text-[10px] mt-0.5">Signature Works</p>
             </div>
           </Link>
         </div>

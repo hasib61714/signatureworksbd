@@ -8,11 +8,11 @@ const FB_PIXEL_ID = process.env.NEXT_PUBLIC_FB_PIXEL_ID
 
 export const metadata = {
   title: {
-    default: 'Signature Works BD — Design and Construction Studio',
-    template: '%s | Signature Works BD',
+    default: 'Signature Works — Design and Construction Studio',
+    template: '%s | Signature Works',
   },
   description:
-    'Signature Works BD — Premium architectural design, construction, and interior design studio in Dhaka, Bangladesh. 150+ projects delivered. 8+ years of excellence.',
+    'Signature Works — Premium architectural design, construction, and interior design studio in Dhaka, Bangladesh. 150+ projects delivered. 8+ years of excellence.',
   metadataBase: new URL('https://signatureworks.studio'),
   icons: {
     icon: '/favicon.ico',
@@ -21,7 +21,7 @@ export const metadata = {
   },
   openGraph: {
     type: 'website',
-    siteName: 'Signature Works BD',
+    siteName: 'Signature Works',
     images: ['/Signature-Works-Logo-png.png'],
   },
   twitter: {

@@ -6,7 +6,7 @@ import { getManagedPageContent } from '@/lib/db/siteSettings'
 
 export const metadata = {
   title: 'Portfolio',
-  description: 'Explore 150+ architectural design, construction, and interior projects by Signature Works BD across Dhaka.',
+  description: 'Explore 150+ architectural design, construction, and interior projects by Signature Works across Dhaka.',
 }
 
 export const dynamic = 'force-dynamic'

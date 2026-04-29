@@ -15,7 +15,7 @@ export default function NewBlogPage() {
   const [error, setError] = useState('')
   const [form, setForm] = useState({
     title: '', slug: '', excerpt: '', category: 'Design',
-    cover_image: '', author: 'Signature Works BD',
+    cover_image: '', author: 'Signature Works',
     published_at: new Date().toISOString().split('T')[0],
     read_time: '5 min read', tags: '', content: '', published: true,
   })
