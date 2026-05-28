@@ -5,6 +5,7 @@ import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import Container from '@/shared/components/ui/Container'
 import { useTheme } from '@/shared/context/ThemeContext'
+import { getNavLinks, defaultNavLinks } from '@/lib/db/siteSettings'
 
 const SERVICE_ITEMS = [
   { label: 'Architectural Design', desc: 'Concept to permit-ready drawings', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6', href: '/services/architectural-design' },
@@ -52,8 +53,13 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [servicesOpen, setServicesOpen] = useState(false)
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false)
+  const [navLinks, setNavLinks] = useState(defaultNavLinks)
 
   useEffect(() => { setMenuOpen(false); setServicesOpen(false); setMobileServicesOpen(false) }, [pathname])
+
+  useEffect(() => {
+    getNavLinks().then(links => { if (links?.length) setNavLinks(links) }).catch(() => {})
+  }, [])
 
   useEffect(() => {
     const handler = (e) => {
@@ -84,9 +90,15 @@ export default function Navbar() {
 
             {/* Desktop Nav */}
             <nav className="hidden xl:flex items-center gap-0.5 flex-1 justify-center">
-              <Link href="/" className={linkCls(pathname === '/')}>Home</Link>
+              {/* Home first */}
+              {navLinks.filter(item => item.href === '/').map(item => (
+                <Link key={item.href} href={item.href}
+                  className={linkCls(pathname === '/')}>
+                  {item.label}
+                </Link>
+              ))}
 
-              {/* Services Dropdown */}
+              {/* Services Dropdown — after Home */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setServicesOpen(v => !v)}
@@ -135,11 +147,16 @@ export default function Navbar() {
                 )}
               </div>
 
-              <Link href="/portfolio"  className={linkCls(pathname === '/portfolio')}>Portfolio</Link>
-              <Link href="/blog"       className={linkCls(pathname.startsWith('/blog'))}>Blog</Link>
-              <Link href="/calculator" className={linkCls(pathname === '/calculator')}>Calculator</Link>
-              <Link href="/#about"     className={linkCls(false)}>About</Link>
-              <Link href="/#contact"   className={linkCls(false)}>Contact</Link>
+              {/* Remaining links (skip Home) */}
+              {navLinks.filter(item => item.href !== '/').map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={linkCls(item.href.startsWith('/#') ? false : pathname.startsWith(item.href))}
+                >
+                  {item.label}
+                </Link>
+              ))}
             </nav>
 
             {/* Desktop right */}
@@ -177,26 +194,20 @@ export default function Navbar() {
           <div className={`xl:hidden overflow-hidden transition-all duration-300 ease-in-out ${menuOpen ? 'max-h-[900px] opacity-100 pb-4' : 'max-h-0 opacity-0'}`}>
             <div className="h-px bg-slate-100 dark:bg-white/[0.07] mb-2" />
             <nav className="flex flex-col gap-0.5">
-              {[
-                { label: 'Home',       href: '/',          d: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-                { label: 'Portfolio',  href: '/portfolio', d: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
-                { label: 'Blog',       href: '/blog',      d: 'M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z' },
-                { label: 'Calculator', href: '/calculator',d: 'M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z' },
-                { label: 'About',      href: '/#about',    d: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' },
-                { label: 'Contact',    href: '/#contact',  d: 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z' },
-              ].map(item => (
-                <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}
-                  className={mobileLinkCls(pathname === item.href)}>
+              {/* Home first */}
+              {navLinks.filter(item => item.href === '/').map(item => (
+                <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)}
+                  className={mobileLinkCls(pathname === '/')}>
                   <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-gold-500 flex-shrink-0">
                     <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d={item.d} />
+                      <path strokeLinecap="round" strokeLinejoin="round" d={item.icon || 'M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'} />
                     </svg>
                   </span>
                   {item.label}
                 </Link>
               ))}
 
-              {/* Services accordion */}
+              {/* Services accordion — after Home */}
               <div>
                 <button onClick={() => setMobileServicesOpen(v => !v)}
                   className="w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.07] transition-colors">
@@ -230,6 +241,19 @@ export default function Navbar() {
                   </div>
                 </div>
               </div>
+
+              {/* Remaining links (skip Home) */}
+              {navLinks.filter(item => item.href !== '/').map(item => (
+                <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)}
+                  className={mobileLinkCls(item.href.startsWith('/#') ? false : pathname.startsWith(item.href))}>
+                  <span className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-gold-500 flex-shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d={item.icon || 'M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3'} />
+                    </svg>
+                  </span>
+                  {item.label}
+                </Link>
+              ))}
             </nav>
 
             <div className="mt-3 pt-3 border-t border-slate-100 dark:border-white/[0.07]">

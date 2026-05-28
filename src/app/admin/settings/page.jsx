@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { PHONE_NUMBER, WHATSAPP_NUMBER, EMAIL, FACEBOOK_URL, WEBSITE_URL } from '@/shared/constants/constants'
+import { defaultNavLinks } from '@/lib/db/siteSettings'
 import { heroSlidesData } from '@/features/home/data/heroData'
 import { servicesData } from '@/features/home/data/servicesData'
 import { testimonialsData } from '@/features/home/data/testimonialsData'
@@ -14,11 +15,18 @@ import { managedPageDefaults } from '@/lib/db/siteSettings'
 import MediaUploadField from '@/shared/components/ui/MediaUploadField'
 
 const SETTINGS_KEYS = [
-  { key: 'phone_number', label: 'Phone Number', placeholder: PHONE_NUMBER, hint: 'Shown in header, footer, and contact section' },
+  { key: 'phone_number',    label: 'Phone Number',    placeholder: PHONE_NUMBER,    hint: 'Shown in header, footer, and contact section' },
   { key: 'whatsapp_number', label: 'WhatsApp Number', placeholder: WHATSAPP_NUMBER, hint: 'Without +, e.g. 8801712345678' },
-  { key: 'email', label: 'Email Address', placeholder: EMAIL, hint: 'Shown in footer and contact section' },
-  { key: 'facebook_url', label: 'Facebook URL', placeholder: FACEBOOK_URL, hint: 'Full URL including https://' },
-  { key: 'website_url', label: 'Website URL', placeholder: WEBSITE_URL, hint: 'Your public domain' },
+  { key: 'email',           label: 'Email Address',   placeholder: EMAIL,           hint: 'Shown in footer and contact section' },
+  { key: 'facebook_url',    label: 'Facebook URL',    placeholder: FACEBOOK_URL,    hint: 'Full URL including https://' },
+  { key: 'website_url',     label: 'Website URL',     placeholder: WEBSITE_URL,     hint: 'Your public domain' },
+  { key: 'maps_embed_url',  label: 'Google Maps Embed URL', placeholder: 'https://www.google.com/maps/embed?pb=...', hint: 'Google Maps-এ গিয়ে Share → Embed a map → Copy HTML — এর src="" ভেতরের URL টা দিন' },
+  { key: 'ga_id',           label: 'Google Analytics ID',   placeholder: 'G-XXXXXXXXXX',  hint: 'Google Analytics 4 Measurement ID' },
+  { key: 'fb_pixel_id',     label: 'Facebook Pixel ID',     placeholder: '1234567890',     hint: 'Facebook Events Manager থেকে Pixel ID' },
+  { key: 'emailjs_service_id',           label: 'EmailJS Service ID',            placeholder: 'service_xxxxxxx', hint: 'EmailJS Dashboard → Email Services' },
+  { key: 'emailjs_public_key',           label: 'EmailJS Public Key',            placeholder: 'xxxxxxxxxxxxxx', hint: 'EmailJS Dashboard → Account → Public Key' },
+  { key: 'emailjs_contact_template_id',  label: 'EmailJS Contact Template ID',   placeholder: 'template_xxxxxxx', hint: 'Contact form-এর EmailJS template ID' },
+  { key: 'emailjs_booking_template_id',  label: 'EmailJS Booking Template ID',   placeholder: 'template_xxxxxxx', hint: 'Booking form-এর EmailJS template ID' },
 ]
 
 const CONTENT_KEYS = [
@@ -122,6 +130,12 @@ const CONTENT_KEYS = [
     label: 'Calculator Page',
     hint: 'Controls the cost calculator page hero content.',
     defaultValue: JSON.stringify(managedPageDefaults.calculatorPage, null, 2),
+  },
+  {
+    key: 'navbar_links_json',
+    label: 'Navigation Bar Links',
+    hint: 'Navbar-এর links, label, ও href এখান থেকে বদলানো যাবে। Services dropdown আলাদা।',
+    defaultValue: JSON.stringify(defaultNavLinks, null, 2),
   },
 ]
 
@@ -437,12 +451,14 @@ export default function SettingsPage() {
       )}
 
       <div className="bg-white rounded-xl border border-gray-200 p-6">
-        <h2 className="font-semibold text-gray-900 text-sm border-b border-gray-100 pb-3 mb-5">Current Values</h2>
+        <h2 className="font-semibold text-gray-900 text-sm border-b border-gray-100 pb-3 mb-5">Current Saved Values</h2>
         <div className="space-y-2 text-sm">
           {SETTINGS_KEYS.map((s) => (
-            <div key={s.key} className="flex items-center gap-3 py-2 border-b border-gray-50">
-              <span className="text-gray-500 w-36 shrink-0 text-xs font-medium">{s.label}</span>
-              <span className="text-gray-800 font-mono text-xs">{s.placeholder}</span>
+            <div key={s.key} className="flex items-start gap-3 py-2 border-b border-gray-50">
+              <span className="text-gray-500 w-48 shrink-0 text-xs font-medium pt-0.5">{s.label}</span>
+              <span className={`font-mono text-xs break-all ${values[s.key] ? 'text-gray-900' : 'text-gray-400'}`}>
+                {values[s.key] || s.placeholder}
+              </span>
             </div>
           ))}
         </div>

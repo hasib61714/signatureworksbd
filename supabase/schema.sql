@@ -183,3 +183,37 @@ create index if not exists idx_contact_submissions_submitted_at on contact_submi
 create index if not exists idx_bookings_submitted_at on bookings (submitted_at desc);
 create index if not exists idx_portfolio_projects_order_index on portfolio_projects (order_index asc);
 create index if not exists idx_blog_posts_published_at on blog_posts (published_at desc);
+
+-- ============================================================
+-- Admin Users System (Run after initial schema)
+-- ============================================================
+
+create table if not exists admin_users (
+  id uuid primary key default gen_random_uuid(),
+  email text unique not null,
+  name text not null,
+  password_hash text not null,
+  role text not null default 'admin' check (role in ('super_admin', 'admin')),
+  permissions jsonb not null default '{"contacts":true,"bookings":true,"portfolio":false,"blog":false,"settings":false,"media":false,"users":false}'::jsonb,
+  is_active boolean not null default true,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+create table if not exists admin_password_resets (
+  id uuid primary key default gen_random_uuid(),
+  email text not null,
+  token text not null unique,
+  expires_at timestamptz not null default (now() + interval '1 hour'),
+  used boolean not null default false,
+  created_at timestamptz not null default now()
+);
+
+-- These tables are accessed only via service_role key (server-side API routes)
+-- No public policies — anon key cannot read/write these tables
+alter table admin_users enable row level security;
+alter table admin_password_resets enable row level security;
+
+create index if not exists idx_admin_users_email on admin_users (email);
+create index if not exists idx_admin_password_resets_token on admin_password_resets (token);
+create index if not exists idx_admin_password_resets_email on admin_password_resets (email);

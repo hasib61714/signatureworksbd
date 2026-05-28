@@ -40,7 +40,7 @@ export default function BookingClient() {
   const [meetingType, setMeetingType] = useState('in_person')
   const [form, setForm] = useState({ name: '', phone: '', topic: '' })
   const [status, setStatus] = useState(null)
-  const { whatsappNumber } = useSiteContactSettings()
+  const { whatsappNumber, emailjsServiceId, emailjsPublicKey, emailjsBookingTemplateId } = useSiteContactSettings()
 
   const handleChange = e => setForm(p => ({ ...p, [e.target.name]: e.target.value }))
 
@@ -53,9 +53,9 @@ export default function BookingClient() {
 
     const dateStr = `${selectedDay.getFullYear()}-${String(selectedDay.getMonth() + 1).padStart(2, '0')}-${String(selectedDay.getDate()).padStart(2, '0')}`
 
-    const serviceId  = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID
-    const templateId = process.env.NEXT_PUBLIC_EMAILJS_BOOKING_TEMPLATE_ID
-    const publicKey  = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+    const serviceId  = emailjsServiceId
+    const templateId = emailjsBookingTemplateId
+    const publicKey  = emailjsPublicKey
 
     let savedToSupabase = false
 
